@@ -1,0 +1,6 @@
+# common stuff
+.classpath
+.project
+.settings
+bin
+target
