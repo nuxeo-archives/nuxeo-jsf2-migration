@@ -1,0 +1,21 @@
+<div xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:a4j="http://richfaces.org/a4j">
+
+  <h3>
+    <h:outputText value="#{messages['title.createGroup']}" />
+  </h3>
+
+  <table class="dataInput">
+    <tbody>
+      <tr>
+        <td>
+          <a4j:commandButton
+            action="#{groupManagementActions.toggleShowCreateForm}" immediate="true"
+            value="#{messages['command.cancel']}" styleClass="button"
+            reRender="groupsPanel" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
