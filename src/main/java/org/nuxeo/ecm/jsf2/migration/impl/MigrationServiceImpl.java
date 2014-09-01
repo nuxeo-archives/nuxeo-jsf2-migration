@@ -46,6 +46,10 @@ public class MigrationServiceImpl implements MigrationService {
 
     private static final String NOTHING_MESSAGE = "file.migration.nothing.message";
 
+    private static final String SUFFIX_DETAILED_MESSAGE = ".detailed";
+
+    private static final String SUFFIX_SUMMARIZED_MESSAGE = ".summarized";
+
     @Override
     public List<File> getAllXhtmlFiles(File root) {
         List<File> listFiles = new ArrayList<File>();
@@ -142,7 +146,12 @@ public class MigrationServiceImpl implements MigrationService {
 
             // If the type of migration is present, it's added to the report
             if (occurence > 0) {
-                report.append(MessageFormat.format(reportProp.getProperty(type.getKeyMessage()), occurence));
+                report.append(" * ");
+                String key = type.getKeyMessage()
+                        + SUFFIX_SUMMARIZED_MESSAGE;
+                report.append(MessageFormat.format(
+                        reportProp.getProperty(key),
+                        occurence));
                 report.append('\n');
             }
         }
@@ -177,9 +186,10 @@ public class MigrationServiceImpl implements MigrationService {
             // Get the actions to do for the migration
             for (EnumTypeMigration type : result.getListMigration().keySet()) {
                 List<String> listParams = result.getListParams().get(type);
+                String key = type.getKeyMessage() + SUFFIX_DETAILED_MESSAGE;
                 String messageReport = MessageFormat.format(
-                        reportProp.getProperty(type.getKeyMessage()),
-                        listParams);
+                        reportProp.getProperty(key),
+                        listParams.toArray());
                 report.append(messageReport);
                 report.append('\n');
             }
