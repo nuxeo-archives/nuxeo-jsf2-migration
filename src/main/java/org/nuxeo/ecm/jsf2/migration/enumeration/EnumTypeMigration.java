@@ -14,12 +14,15 @@
  * Contributors:
  *     <a href="mailto:glefevre@nuxeo.com">Gildas</a>
  */
-package org.nuxeo.ecm.jsf2.migration.report;
+package org.nuxeo.ecm.jsf2.migration.enumeration;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.nuxeo.ecm.jsf2.migration.parser.GenericParser;
+import org.nuxeo.ecm.jsf2.migration.parser.ReRenderParser;
+import org.nuxeo.ecm.jsf2.migration.parser.RuleParser;
 
 
 /**
@@ -29,34 +32,37 @@ import org.apache.commons.lang.StringUtils;
  */
 public enum EnumTypeMigration {
 
-    A4J_FORM_RULE_1("//a4j:form","a4j","http://richfaces.org/a4j","tag.a4j.ajax.rule1.message", Severity.WARNING),
-    A4J_FORM_RULE_2("//a4j:form","a4j","https://ajax4jsf.dev.java.net/ajax","tag.a4j.ajax.rule1.message", Severity.WARNING),
-    NAMESPACE_RULE_1(null, null, null, "tag.namespace.rule1.message", Severity.ERROR),
-    NAMESPACE_RULE_2("a4j", "a4j", "https://ajax4jsf.dev.java.net/ajax", "tag.namespace.rule2.message", Severity.INFO);
+    A4J_FORM_RULE("//a4j:form","a4j.ajax.rule1.message", Severity.WARNING, GenericParser.class),
+    A4J_RERENDER_RULE("//@reRender","a4j.rerender.rule.message", Severity.WARNING, ReRenderParser.class),
+    A4J_ACTIONPARAM_RULE("//a4j:actionparam", "a4j.actionParam.rule.message",Severity.INFO, GenericParser.class),
+    NAMESPACE_RULE_1(null, "namespace.rule1.message", Severity.ERROR, null),
+    NAMESPACE_RULE_2(null, "namespace.rule2.message", Severity.INFO, null),
+    NAMESPACE_RULE_3(null, "namespace.rule3.message", Severity.INFO, null);
 
     private enum Severity {INFO, WARNING, ERROR};
 
+    // XPath used to get the elements to check
     private String xpath;
 
-    private String prefix;
-
-    private String namespace;
-
+    // The key of the message stored in the properties file
     private String keyMessage;
 
+    // The severity of the message
     private Severity severityMessage;
+
+    private Class parser;
+
+    private RuleParser instance;
 
     private EnumTypeMigration(
             String xpath,
-            String prefix,
-            String namespace,
             String keyMessage,
-            Severity severity) {
+            Severity severity,
+            Class parser) {
         this.xpath = xpath;
-        this.prefix = prefix;
-        this.namespace = namespace;
         this.keyMessage = keyMessage;
         this.severityMessage = severity;
+        this.parser = parser;
     }
 
     public String getXPath() {
@@ -71,16 +77,29 @@ public enum EnumTypeMigration {
         return severityMessage;
     }
 
-    public String getNamespace() {
-        return namespace;
-    }
-
-    public String getPrefix() {
-        return prefix;
+    public RuleParser getInstance() {
+        try {
+            initParser();
+            } catch (Exception ex) {
+            // TODO
+            }
+            return instance;
     }
 
     /**
-     * Get all the type of migration with a xpath defined.
+    * Init the parser.
+    * @param listPrefixes The list of prefixes defined in the contribution.
+    * @throws Exception
+    */
+    public void initParser() throws Exception {
+    if (instance == null) {
+        instance = (RuleParser) parser.newInstance();
+    }
+        instance.init(this);
+    }
+
+    /**
+     * Get all the type of migration with an element defined.
      *
      * @return
      */
