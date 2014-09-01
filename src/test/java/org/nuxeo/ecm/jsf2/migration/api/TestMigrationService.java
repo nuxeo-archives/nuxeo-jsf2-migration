@@ -25,8 +25,8 @@ import java.net.URL;
 import org.dom4j.DocumentException;
 import org.jaxen.JaxenException;
 import org.junit.Test;
+import org.nuxeo.ecm.jsf2.migration.enumeration.EnumTypeMigration;
 import org.nuxeo.ecm.jsf2.migration.impl.MigrationServiceImpl;
-import org.nuxeo.ecm.jsf2.migration.report.EnumTypeMigration;
 import org.nuxeo.ecm.jsf2.migration.report.FileReport;
 
 /**
@@ -57,7 +57,7 @@ public class TestMigrationService {
 
         // Check the result
         assertEquals(1, report.getListMigration().size());
-        assertEquals(0, report.getListParams().size());
+        assertEquals(1, report.getListParams().size());
         assertTrue(report.getListMigration().containsKey(EnumTypeMigration.NAMESPACE_RULE_2));
     }
 
