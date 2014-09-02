@@ -28,7 +28,9 @@ import java.util.Properties;
 import org.apache.commons.io.FilenameUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
+import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
+import org.dom4j.io.XMLWriter;
 import org.jaxen.JaxenException;
 import org.nuxeo.ecm.jsf2.migration.api.MigrationService;
 import org.nuxeo.ecm.jsf2.migration.enumeration.EnumTypeMigration;
@@ -146,7 +148,7 @@ public class MigrationServiceImpl implements MigrationService {
 
             // If the type of migration is present, it's added to the report
             if (occurence > 0) {
-                report.append(" * ");
+                report.append(" * [" + type.getSeverity() + "] ");
                 String key = type.getKeyMessage()
                         + SUFFIX_SUMMARIZED_MESSAGE;
                 report.append(MessageFormat.format(
@@ -190,6 +192,7 @@ public class MigrationServiceImpl implements MigrationService {
                 String messageReport = MessageFormat.format(
                         reportProp.getProperty(key),
                         listParams.toArray());
+                report.append("[" + type.getSeverity() + "] ");
                 report.append(messageReport);
                 report.append('\n');
             }
@@ -206,11 +209,25 @@ public class MigrationServiceImpl implements MigrationService {
 
         try {
             xhtmlDoc = reader.read(file);
+
+            // Format the input file to allow the user to do a diff easily
+            PrintWriter printWriter = new PrintWriter(file);
+            XMLWriter writer = new XMLWriter(printWriter, OutputFormat.createPrettyPrint());
+            writer.write(xhtmlDoc);
+            printWriter.close();
+
             for (EnumTypeMigration type : EnumTypeMigration.getTypesMigration()) {
-                RuleParser parser = type.getInstance();
+                RuleParser parser = type.getInstance(doMigration);
                 if (parser != null) {
                     parser.parse(xhtmlDoc, fileReport);
+                    if (doMigration) {
+                        // If the automatic migration is activated, the parser
+                        // tries to do the migration too
+                        parser.migrate(xhtmlDoc, file.getAbsolutePath());
+                    }
                 }
+                // reset the instance of the parser
+                type.resetInstance();
             }
         } catch(DocumentException docEx) {
             // A parsing exception occured, the error is loaded in the FileReport.

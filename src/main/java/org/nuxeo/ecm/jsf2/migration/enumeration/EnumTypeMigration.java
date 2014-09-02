@@ -32,12 +32,12 @@ import org.nuxeo.ecm.jsf2.migration.parser.RuleParser;
  */
 public enum EnumTypeMigration {
 
-    A4J_FORM_RULE("//a4j:form","a4j.ajax.rule1.message", Severity.WARNING, GenericParser.class),
-    A4J_RERENDER_RULE("//@reRender","a4j.rerender.rule.message", Severity.WARNING, ReRenderParser.class),
-    A4J_ACTIONPARAM_RULE("//a4j:actionparam", "a4j.actionParam.rule.message",Severity.INFO, GenericParser.class),
-    NAMESPACE_RULE_1(null, "namespace.rule1.message", Severity.ERROR, null),
-    NAMESPACE_RULE_2(null, "namespace.rule2.message", Severity.INFO, null),
-    NAMESPACE_RULE_3(null, "namespace.rule3.message", Severity.INFO, null);
+    A4J_FORM_RULE("//a4j:form","a4j.ajax.rule1.message", Severity.ERROR, GenericParser.class, false),
+    A4J_RERENDER_RULE("//@reRender","a4j.rerender.rule.message", Severity.WARNING, ReRenderParser.class, true, "render"),
+    A4J_ACTIONPARAM_RULE("//a4j:actionparam", "a4j.actionParam.rule.message",Severity.INFO, GenericParser.class, true, "a4j:param"),
+    NAMESPACE_RULE_1(null, "namespace.rule1.message", Severity.ERROR, null, false),
+    NAMESPACE_RULE_2(null, "namespace.rule2.message", Severity.INFO, null, true),
+    NAMESPACE_RULE_3(null, "namespace.rule3.message", Severity.INFO, null, false);
 
     private enum Severity {INFO, WARNING, ERROR};
 
@@ -50,19 +50,44 @@ public enum EnumTypeMigration {
     // The severity of the message
     private Severity severityMessage;
 
+    // The parser used to analyze and migrate the file
     private Class parser;
 
+    // The instance of the parser
     private RuleParser instance;
+
+    // The migration can it be done by the parser?
+    private boolean migrationAuto;
+
+    // When an auto migration is possible, newValue contains the new value for the element
+    private String newValue;
 
     private EnumTypeMigration(
             String xpath,
             String keyMessage,
             Severity severity,
-            Class parser) {
+            Class parser,
+            boolean migrationAuto) {
         this.xpath = xpath;
         this.keyMessage = keyMessage;
         this.severityMessage = severity;
         this.parser = parser;
+        this.migrationAuto = migrationAuto;
+    }
+
+    private EnumTypeMigration(
+            String xpath,
+            String keyMessage,
+            Severity severity,
+            Class parser,
+            boolean migrationAuto,
+            String newValue) {
+        this.xpath = xpath;
+        this.keyMessage = keyMessage;
+        this.severityMessage = severity;
+        this.parser = parser;
+        this.migrationAuto = migrationAuto;
+        this.newValue = newValue;
     }
 
     public String getXPath() {
@@ -77,9 +102,17 @@ public enum EnumTypeMigration {
         return severityMessage;
     }
 
-    public RuleParser getInstance() {
+    public boolean isMigrationAuto() {
+        return migrationAuto;
+    }
+
+    public String getNewValue() {
+        return newValue;
+    }
+
+    public RuleParser getInstance(boolean doMigration) {
         try {
-            initParser();
+            initParser(doMigration);
             } catch (Exception ex) {
             // TODO
             }
@@ -87,15 +120,22 @@ public enum EnumTypeMigration {
     }
 
     /**
-    * Init the parser.
-    * @param listPrefixes The list of prefixes defined in the contribution.
-    * @throws Exception
-    */
-    public void initParser() throws Exception {
-    if (instance == null) {
-        instance = (RuleParser) parser.newInstance();
+     * Init the parser.
+     *
+     * @param listPrefixes The list of prefixes defined in the contribution.
+     * @throws Exception
+     */
+    public void initParser(
+            boolean doMigration)
+            throws Exception {
+        if (instance == null) {
+            instance = (RuleParser) parser.newInstance();
+        }
+        instance.init(this, doMigration);
     }
-        instance.init(this);
+
+    public void resetInstance() {
+        instance = null;
     }
 
     /**

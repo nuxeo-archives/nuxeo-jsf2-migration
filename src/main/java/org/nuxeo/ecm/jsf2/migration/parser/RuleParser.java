@@ -16,8 +16,6 @@
  */
 package org.nuxeo.ecm.jsf2.migration.parser;
 
-import java.io.File;
-
 import org.dom4j.Document;
 import org.nuxeo.ecm.jsf2.migration.enumeration.EnumTypeMigration;
 import org.nuxeo.ecm.jsf2.migration.report.FileReport;
@@ -35,9 +33,9 @@ public interface RuleParser {
      * of prefixes available.
      *
      * @param rule
-     * @param listPrefixes
+     * @param doMigration
      */
-    public void init(EnumTypeMigration rule);
+    public void init(EnumTypeMigration rule, boolean doMigration);
 
     /**
      * Apply the rule to the file and generate a FileReport object containing
@@ -51,7 +49,8 @@ public interface RuleParser {
     /**
      * Do the JSF 2 migration on the file.
      *
-     * @return Return the updated file with the migrations.
+     * @param input The DOM of the file to migrate.
+     * @param originalFilePath The path of the original file.
      */
-    public File migrate(File input) throws Exception;
+    public void migrate(Document input, String originalFilePath) throws Exception;
 }

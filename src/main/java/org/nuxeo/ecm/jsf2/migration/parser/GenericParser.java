@@ -17,6 +17,7 @@
 package org.nuxeo.ecm.jsf2.migration.parser;
 
 import java.io.File;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -26,6 +27,11 @@ import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
+import org.dom4j.Node;
+import org.dom4j.QName;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.XMLWriter;
+import org.jaxen.JaxenException;
 import org.jaxen.SimpleNamespaceContext;
 import org.jaxen.XPath;
 import org.jaxen.dom4j.Dom4jXPath;
@@ -48,12 +54,22 @@ public class GenericParser implements
 
     protected String xpath;
 
+    protected boolean doMigration;
+
+    protected List<Node> listElementsToMigrate;
+
+    protected List<String> listPrefixToMigrate;
+
     @Override
-    public void init(EnumTypeMigration rule) {
+    public void init(EnumTypeMigration rule, boolean doMigration) {
         xpath = rule.getXPath();
         this.rule = rule;
+        this.doMigration = doMigration;
+        listElementsToMigrate = new ArrayList<Node>();
+        listPrefixToMigrate = new ArrayList<String>();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void parse(Document input, FileReport report) throws Exception {
         XPath xpathExpr = new Dom4jXPath(xpath);
@@ -78,18 +94,17 @@ public class GenericParser implements
             }
         }
 
-        @SuppressWarnings("unchecked")
-        List<Element> elements = xpathExpr.selectNodes(input);
-        if (elements.size() > 0) {
+        listElementsToMigrate = xpathExpr.selectNodes(input);
+        if (listElementsToMigrate.size() > 0) {
             List<String> params = new ArrayList<String>();
-            params.add("" + elements.size());
+            params.add("" + listElementsToMigrate.size());
             report.getListParams().put(rule, params);
-            report.getListMigration().put(rule, elements.size());
+            report.getListMigration().put(rule, listElementsToMigrate.size());
         }
     }
 
     /**
-     * The method checks if the namespace used of the prefix is the correct one
+     * The method checks if the namespace used for the prefix is the correct one
      * with JSF2. If not, an error is added to the report and the "incorrect"
      * namespace is used in the XPath request in order to get properly the
      * elements matching the request.
@@ -99,7 +114,7 @@ public class GenericParser implements
      * @param report The report to add the error if needed.
      * @return The name of the namespace to use for the XPath query.
      */
-    private String checkNamespace(
+    protected String checkNamespace(
             Element rootElement,
             String prefixToCheck,
             FileReport report) {
@@ -114,6 +129,8 @@ public class GenericParser implements
             params.add(prefixToCheck);
             params.add(namespace);
             report.getListParams().put(EnumTypeMigration.NAMESPACE_RULE_2, params);
+            // Add the prefix to the list of prefix to migrate
+            listPrefixToMigrate.add(prefixToCheck);
             // Use the "incorrect" namespace in the xpath query
             namespace = namespaceInDoc.getURI();
         }
@@ -123,10 +140,20 @@ public class GenericParser implements
 
 
     @Override
-    public File migrate(File input) throws Exception {
-        // TODO Auto-generated method stub
-        // return null;
-        throw new UnsupportedOperationException();
+    public void migrate(Document input, String originalFilePath) throws Exception {
+        // Migrate the namespaces
+        migratePrefixesNamespace(input);
+        // Migrate the elements matching the rule
+        if (rule.isMigrationAuto()) {
+            for (Node node : listElementsToMigrate) {
+                if (!StringUtils.isEmpty(rule.getNewValue())) {
+                    Element element = (Element) node;
+                    element.setName(rule.getNewValue());
+                }
+            }
+        }
+        // Create a new file with the migrations
+        createMigratedFile(input, originalFilePath);
     }
 
     /**
@@ -135,7 +162,7 @@ public class GenericParser implements
      * @param xpath XPath to check
      * @return The value of the prefix if present.
      */
-    private List<String> getPrefix(
+    protected List<String> getPrefix(
             String xpath) {
         List<String> listPrefixes = new ArrayList<String>();
 
@@ -153,5 +180,66 @@ public class GenericParser implements
         }
 
         return listPrefixes;
+    }
+
+    /**
+     * Migrate the namespaces that changed with JSF2.
+     *
+     * @param input The DOM of the input file.
+     */
+    protected void migratePrefixesNamespace(Document input)
+        throws JaxenException{
+        Element root = input.getRootElement();
+        for (String prefix : listPrefixToMigrate) {
+            Namespace newNamespace = new Namespace(prefix, EnumPrefixes.getPrefix(prefix).getNamespace());
+            Namespace oldNamespace = root.getNamespaceForPrefix(prefix);
+            if (oldNamespace != null) {
+                root.remove(oldNamespace);
+            }
+            root.add(newNamespace);
+
+            // Change the name of every elements with the prefix
+            StringBuilder prefixXpath = new StringBuilder(
+                    "//");
+            prefixXpath.append(prefix);
+            prefixXpath.append(":*");
+            // Create a new XPath expression, with the old namespace in order to
+            // get the elements matching the expression
+            XPath xpath = new Dom4jXPath(
+                    prefixXpath.toString());
+            SimpleNamespaceContext nc = new SimpleNamespaceContext();
+            nc.addNamespace(
+                    prefix,
+                    oldNamespace.getURI());
+            xpath.setNamespaceContext(nc);
+
+            @SuppressWarnings("unchecked")
+            List<Element> elementsToMigrate = xpath.selectNodes(input);
+            for (Element element : elementsToMigrate) {
+                // The namespace to change is not hold by the element but the QName
+                QName qname = element.getQName();
+                QName newQName = new QName(qname.getName(), newNamespace, qname.getQualifiedName());
+                element.setQName(newQName);
+            }
+        }
+    }
+
+    /**
+     * Create a file containing the migration done in the Document.
+     *
+     * @param input
+     * @param filePath
+     * @throws Exception
+     */
+    protected void createMigratedFile(Document input, String filePath)
+        throws Exception {
+        File fileMigrated = new File(filePath + ".migrated");
+        fileMigrated.createNewFile();
+
+        PrintWriter printWriter = new PrintWriter(fileMigrated);
+        XMLWriter writer = new XMLWriter(printWriter, OutputFormat.createPrettyPrint());
+        writer.write(input);
+
+        printWriter.close();
     }
 }
