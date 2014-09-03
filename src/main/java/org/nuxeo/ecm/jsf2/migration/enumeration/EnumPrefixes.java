@@ -28,6 +28,8 @@ public enum EnumPrefixes {
     C("c","http://java.sun.com/jstl/core"),
     H("h", "http://java.sun.com/jsf/html"),
     F("f", "http://java.sun.com/jsf/core"),
+    UI("ui", "http://java.sun.com/jsf/facelets"),
+    FN("fn", "http://java.sun.com/jsp/jstl/functions"),
     A4J("a4j", "http://richfaces.org/a4j"),
     RICH("rich", "http://richfaces.org/rich"),
     A4F("a4f", "https://ajax4jsf.dev.java.net/ajax"),
@@ -36,6 +38,8 @@ public enum EnumPrefixes {
     NXU("nxu", "http://nuxeo.org/nxweb/util"),
     NXH("nxh", "http://nuxeo.org/nxweb/html"),
     NXDIR("nxdir", "http://nuxeo.org/nxdirectory"),
+    NXD("nxd", "http://nuxeo.org/nxweb/document"),
+    NXP("nxp", "http://nuxeo.org/nxweb/pdf"),
     UNKNOWN("unknown", null);
 
     private String prefix;
