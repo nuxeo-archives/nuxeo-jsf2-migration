@@ -145,8 +145,8 @@ public class MigrationServiceImpl implements MigrationService {
         for (EnumTypeMigration type : EnumTypeMigration.values()) {
             int occurence = 0;
             for (FileReport fileReport : listResults) {
-                if (fileReport.getListMigration().containsKey(type)) {
-                    occurence += fileReport.getListMigration().get(type);
+                if (fileReport.getListMigrations().containsKey(type)) {
+                    occurence += fileReport.getListMigrations().get(type);
                 }
             }
 
@@ -184,13 +184,13 @@ public class MigrationServiceImpl implements MigrationService {
             report.append("\n-----------------------\n");
 
             // If nothing was reported, display a generic message
-            if (result.getListMigration().size() == 0) {
+            if (result.getListMigrations().size() == 0) {
                 report.append(reportProp.getProperty(NOTHING_MESSAGE));
                 report.append('\n');
             }
 
             // Get the actions to do for the migration
-            for (EnumTypeMigration type : result.getListMigration().keySet()) {
+            for (EnumTypeMigration type : result.getListMigrations().keySet()) {
                 List<String> listParams = result.getListParams().get(type);
                 String key = type.getKeyMessage() + SUFFIX_DETAILED_MESSAGE;
                 String messageReport = MessageFormat.format(
@@ -232,7 +232,7 @@ public class MigrationServiceImpl implements MigrationService {
                 type.resetInstance();
             }
 
-            if (doMigration && fileReport.getListMigration().size() > 0) {
+            if (doMigration && fileReport.getListMigrations().size() > 0) {
                 if (format) {
                     // Format the input file to allow the user to do a diff easily
                     createFile(xhtmlOriginal, file.getAbsolutePath(), false);
@@ -245,7 +245,7 @@ public class MigrationServiceImpl implements MigrationService {
             List<String> params = new ArrayList<String>();
             params.add(docEx.getMessage());
             fileReport.getListParams().put(EnumTypeMigration.ERROR_READING_DOCUMENT, params);
-            fileReport.getListMigration().put(EnumTypeMigration.ERROR_READING_DOCUMENT, 1);
+            fileReport.getListMigrations().put(EnumTypeMigration.ERROR_READING_DOCUMENT, 1);
         } catch(Exception ex) {
             // TODO
         }

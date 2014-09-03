@@ -84,7 +84,7 @@ public class GenericParser implements
                     xpathExpr.setNamespaceContext(nsContext);
                 } else {
                     // Add an error in the file report for the unknown namespace
-                    report.getListMigration().put(EnumTypeMigration.NAMESPACE_RULE_2, 1);
+                    report.getListMigrations().put(EnumTypeMigration.NAMESPACE_RULE_2, 1);
                     List<String> params = new ArrayList<String>();
                     params.add(prefixInXpath);
                     report.getListParams().put(EnumTypeMigration.NAMESPACE_RULE_2, params);
@@ -97,7 +97,7 @@ public class GenericParser implements
             List<String> params = new ArrayList<String>();
             params.add("" + listElementsToMigrate.size());
             report.getListParams().put(rule, params);
-            report.getListMigration().put(rule, listElementsToMigrate.size());
+            report.getListMigrations().put(rule, listElementsToMigrate.size());
         }
     }
 

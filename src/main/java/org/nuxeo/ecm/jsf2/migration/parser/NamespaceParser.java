@@ -61,7 +61,7 @@ public class NamespaceParser extends GenericParser {
             if (ns != null && !StringUtils.equals(prefix.getNamespace(), ns.getURI())) {
                 listPrefixToMigrate.add(prefix.getPrefix());
                 // Add the value for the report
-                report.getListMigration().put(EnumTypeMigration.NAMESPACE_RULE_1, 1);
+                report.getListMigrations().put(EnumTypeMigration.NAMESPACE_RULE_1, 1);
                 List<String> params = new ArrayList<String>();
                 params.add(prefix.getPrefix());
                 params.add(prefix.getNamespace());

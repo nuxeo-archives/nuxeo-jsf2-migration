@@ -57,7 +57,7 @@ public class TestMigrationService {
         FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_NOTHING_TO_MIGRATE, false);
 
         // Check the result
-        assertEquals(0, report.getListMigration().size());
+        assertEquals(0, report.getListMigrations().size());
         assertEquals(0, report.getListParams().size());
     }
 
@@ -68,9 +68,9 @@ public class TestMigrationService {
         FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_WRONG_NAMESPACE, false);
 
         // Check the result
-        assertEquals(1, report.getListMigration().size());
+        assertEquals(1, report.getListMigrations().size());
         assertEquals(1, report.getListParams().size());
-        assertTrue(report.getListMigration().containsKey(EnumTypeMigration.NAMESPACE_RULE_1));
+        assertTrue(report.getListMigrations().containsKey(EnumTypeMigration.NAMESPACE_RULE_1));
     }
 
     @Test
@@ -79,9 +79,9 @@ public class TestMigrationService {
         FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_PREFIX_UNBOUND, false);
 
         // Check the result
-        assertEquals(1, report.getListMigration().size());
+        assertEquals(1, report.getListMigrations().size());
         assertEquals(1, report.getListParams().size());
-        assertTrue(report.getListMigration().containsKey(EnumTypeMigration.ERROR_READING_DOCUMENT));
+        assertTrue(report.getListMigrations().containsKey(EnumTypeMigration.ERROR_READING_DOCUMENT));
     }
 
     @Test
@@ -90,13 +90,13 @@ public class TestMigrationService {
         FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_WITH_MIGRATIONS, false);
 
         // Check the result
-        assertEquals(5, report.getListMigration().size());
+        assertEquals(5, report.getListMigrations().size());
         assertEquals(5, report.getListParams().size());
-        assertTrue(report.getListMigration().containsKey(EnumTypeMigration.NAMESPACE_RULE_1));
-        assertTrue(report.getListMigration().containsKey(EnumTypeMigration.A4J_RERENDER_RULE));
-        assertTrue(report.getListMigration().containsKey(EnumTypeMigration.A4J_ACTIONPARAM_RULE));
-        assertTrue(report.getListMigration().containsKey(EnumTypeMigration.RICH_SUGGESTIONBOX_RULE));
-        assertTrue(report.getListMigration().containsKey(EnumTypeMigration.A4J_FORM_RULE));
+        assertTrue(report.getListMigrations().containsKey(EnumTypeMigration.NAMESPACE_RULE_1));
+        assertTrue(report.getListMigrations().containsKey(EnumTypeMigration.A4J_RERENDER_RULE));
+        assertTrue(report.getListMigrations().containsKey(EnumTypeMigration.A4J_ACTIONPARAM_RULE));
+        assertTrue(report.getListMigrations().containsKey(EnumTypeMigration.RICH_SUGGESTIONBOX_RULE));
+        assertTrue(report.getListMigrations().containsKey(EnumTypeMigration.A4J_FORM_RULE));
     }
 
     @Test
