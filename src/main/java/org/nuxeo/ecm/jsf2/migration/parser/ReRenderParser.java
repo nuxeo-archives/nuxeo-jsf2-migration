@@ -32,7 +32,6 @@ import org.dom4j.tree.DefaultAttribute;
  */
 public class ReRenderParser extends GenericParser {
 
-    //private static final String REGEX_EL = "(\\#|\\$)\\{([^}]+)\\}";
     private static final String REGEX_EL = "(\\#|\\$)\\{([^}]+)\\}([^,]*)|([^,]+)";
 
     @Override
