@@ -73,8 +73,12 @@ public class MigrationServiceImpl implements MigrationService {
     }
 
     @Override
-    public void analyzeProject(File report, List<File> listFiles,
-            boolean doMigration) throws IOException {
+    public void analyzeProject(
+            File report,
+            List<File> listFiles,
+            boolean doMigration,
+            boolean format)
+            throws IOException {
         // If the file does not exist, it is created
         if (!report.exists()) {
             report.createNewFile();
@@ -88,7 +92,7 @@ public class MigrationServiceImpl implements MigrationService {
         List<FileReport> listReports = new ArrayList<FileReport>();
         for (File file : listFiles) {
             try {
-                listReports.add(analyzeFile(file, doMigration));
+                listReports.add(analyzeFile(file, doMigration, format));
             } catch(DocumentException ex) {
                 System.out.println(String.format("Error while reading file %s.", file.getName()));
                 System.out.println(ex.getMessage());
@@ -200,8 +204,12 @@ public class MigrationServiceImpl implements MigrationService {
     }
 
     @Override
-    public FileReport analyzeFile(File file, boolean doMigration)
-            throws JaxenException, DocumentException {
+    public FileReport analyzeFile(
+            File file,
+            boolean doMigration,
+            boolean format)
+            throws JaxenException,
+            DocumentException {
         FileReport fileReport = new FileReport(file);
 
         SAXReader reader = new SAXReader();

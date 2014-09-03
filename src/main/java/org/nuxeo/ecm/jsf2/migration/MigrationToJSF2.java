@@ -36,12 +36,13 @@ public class MigrationToJSF2 {
     public static void main(String[] args) {
         // Check the arguments in parameter
         if (args.length == 0) {
-            System.out.println("Usage : java -jar <path to project>");
+            System.out.println("Usage : java -jar <path to project> <auto migration> <format original files>");
             return;
         }
         // Get the parameters
         String path = args[0];
         boolean migration = args.length > 1 ? Boolean.parseBoolean(args[1]) : false;
+        boolean format = args.length > 2 ? Boolean.parseBoolean(args[2]) : false;
         File directory = new File(path);
 
         // Check if the directory exists
@@ -65,7 +66,7 @@ public class MigrationToJSF2 {
         // Generate the report
         File report = new File(path + "/report.txt");
         try {
-        migrationService.analyzeProject(report, listXHTMLFiles, migration);
+        migrationService.analyzeProject(report, listXHTMLFiles, migration, format);
         } catch (IOException ex) {
             System.out.println(String.format("Error while generating the report : %s", ex.getMessage()));
         }

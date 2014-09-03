@@ -45,21 +45,35 @@ public interface MigrationService {
      *
      * @param report The report file which will contain the report.
      * @param listFiles The list of files to analyze.
+     * @param doMigration Do the automatic migration if allowed by the rules.
+     * @param format Before migrating the file, do a format of the original
+     *            files in order to have the same format for the two files
      * @throws IOException
      */
-    public void analyzeProject(File report, List<File> listFiles,
-            boolean doMigration) throws IOException;
+    public void analyzeProject(
+            File report,
+            List<File> listFiles,
+            boolean doMigration,
+            boolean format)
+            throws IOException;
 
     /**
      * Analyze an XHTML file for the action to be done for the migration.
      *
      * @param file The file to analyze.
-     * @param doMigration Automatically do the migration in the file if possible.
+     * @param doMigration Automatically do the migration in the file if
+     *            possible.
+     * @param format Before migrating the file, do a format of the original
+     *            files in order to have the same format for the two files
      * @return A FileReport object containing the action to be done.
      * @throws JaxenException
      */
-    public FileReport analyzeFile(File file, boolean doMigration)
-            throws JaxenException, DocumentException;
+    public FileReport analyzeFile(
+            File file,
+            boolean doMigration,
+            boolean format)
+            throws JaxenException,
+            DocumentException;
 
 
 }

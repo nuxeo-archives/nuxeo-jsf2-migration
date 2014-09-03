@@ -78,6 +78,6 @@ public class TestMigrationService {
                 templateName);
         File template = new File(url.getPath());
 
-        return migrationService.analyzeFile(template, false);
+        return migrationService.analyzeFile(template, doMigration, false);
     }
 }
