@@ -35,6 +35,7 @@ public enum EnumTypeMigration {
     A4J_FORM_RULE("//a4j:form","a4j.ajax.rule1.message", Severity.ERROR, GenericParser.class, false),
     A4J_RERENDER_RULE("//@reRender","a4j.rerender.rule.message", Severity.WARNING, ReRenderParser.class, true, "render"),
     A4J_ACTIONPARAM_RULE("//a4j:actionparam", "a4j.actionParam.rule.message",Severity.INFO, GenericParser.class, true, "a4j:param"),
+    RICH_SUGGESTIONBOX_RULE("//rich:suggestionbox", "rich.suggestionBox.rule.message",Severity.INFO, GenericParser.class, false),
     NAMESPACE_RULE_1(null, "namespace.rule1.message", Severity.ERROR, null, false),
     NAMESPACE_RULE_2(null, "namespace.rule2.message", Severity.INFO, null, true),
     NAMESPACE_RULE_3(null, "namespace.rule3.message", Severity.INFO, null, false);
