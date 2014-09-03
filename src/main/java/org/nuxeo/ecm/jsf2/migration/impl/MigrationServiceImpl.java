@@ -213,16 +213,10 @@ public class MigrationServiceImpl implements MigrationService {
         FileReport fileReport = new FileReport(file);
 
         SAXReader reader = new SAXReader();
-        Document xhtmlDoc;
 
         try {
-            xhtmlDoc = reader.read(file);
-
-            // Format the input file to allow the user to do a diff easily
-            PrintWriter printWriter = new PrintWriter(file);
-            XMLWriter writer = new XMLWriter(printWriter, OutputFormat.createPrettyPrint());
-            writer.write(xhtmlDoc);
-            printWriter.close();
+            Document xhtmlDoc = reader.read(file);
+            Document xhtmlOriginal = (Document) xhtmlDoc.clone();
 
             for (EnumTypeMigration type : EnumTypeMigration.getTypesMigration()) {
                 RuleParser parser = type.getInstance(doMigration);
@@ -237,6 +231,15 @@ public class MigrationServiceImpl implements MigrationService {
                 // reset the instance of the parser
                 type.resetInstance();
             }
+
+            if (doMigration && fileReport.getListMigration().size() > 0) {
+                if (format) {
+                    // Format the input file to allow the user to do a diff easily
+                    createFile(xhtmlOriginal, file.getAbsolutePath(), false);
+                }
+                // Create a new file with the migrations
+                createFile(xhtmlDoc, file.getAbsolutePath() + ".migrated", true);
+            }
         } catch(DocumentException docEx) {
             // A parsing exception occured, the error is loaded in the FileReport.
             List<String> params = new ArrayList<String>();
@@ -248,5 +251,27 @@ public class MigrationServiceImpl implements MigrationService {
         }
 
         return fileReport;
+    }
+
+    /**
+     * Create a file containing the migration done in the Document.
+     *
+     * @param input
+     * @param filePath
+     * @throws Exception
+     */
+    protected void createFile(Document input, String filePath, boolean createNewFile)
+        throws Exception {
+
+        // Create file
+        File fileMigrated = new File(filePath);
+        if (createNewFile) {
+            fileMigrated.createNewFile();
+        }
+        PrintWriter printWriter = new PrintWriter(fileMigrated);
+        XMLWriter writer = new XMLWriter(printWriter, OutputFormat.createPrettyPrint());
+        writer.write(input);
+
+        printWriter.close();
     }
 }
