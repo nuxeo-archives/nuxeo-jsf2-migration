@@ -35,10 +35,8 @@ public class ReRenderParser extends GenericParser {
     private static final String REGEX_EL = "(\\#|\\$)\\{([^}]+)\\}([^,]*)|([^,]+)";
 
     @Override
-    public void migrate(Document input, String originalFilePath)
+    public void migrate(Document input)
             throws Exception {
-        // Migrate the namespaces
-        migratePrefixesNamespace(input);
         // Migrate the elements matching the rule
         if (rule.isMigrationAuto()) {
             for (Node node : listElementsToMigrate) {
@@ -49,8 +47,6 @@ public class ReRenderParser extends GenericParser {
                 parentElement.add(attribute);
             }
         }
-        // Create a new file with the migrations
-        createMigratedFile(input, originalFilePath);
     }
 
     /**

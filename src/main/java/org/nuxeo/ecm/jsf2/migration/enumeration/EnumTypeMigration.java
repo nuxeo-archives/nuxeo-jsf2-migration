@@ -19,8 +19,10 @@ package org.nuxeo.ecm.jsf2.migration.enumeration;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.jsf2.migration.parser.GenericParser;
+import org.nuxeo.ecm.jsf2.migration.parser.NamespaceParser;
 import org.nuxeo.ecm.jsf2.migration.parser.ReRenderParser;
 import org.nuxeo.ecm.jsf2.migration.parser.RuleParser;
 
@@ -33,14 +35,16 @@ import org.nuxeo.ecm.jsf2.migration.parser.RuleParser;
 public enum EnumTypeMigration {
 
     A4J_FORM_RULE("//a4j:form","a4j.ajax.rule1.message", Severity.ERROR, GenericParser.class, false),
-    A4J_RERENDER_RULE("//@reRender","a4j.rerender.rule.message", Severity.WARNING, ReRenderParser.class, true, "render"),
-    A4J_ACTIONPARAM_RULE("//a4j:actionparam", "a4j.actionParam.rule.message",Severity.INFO, GenericParser.class, true, "a4j:param"),
-    RICH_SUGGESTIONBOX_RULE("//rich:suggestionbox", "rich.suggestionBox.rule.message",Severity.INFO, GenericParser.class, false),
-    NAMESPACE_RULE_1(null, "namespace.rule1.message", Severity.ERROR, null, false),
-    NAMESPACE_RULE_2(null, "namespace.rule2.message", Severity.INFO, null, true),
-    NAMESPACE_RULE_3(null, "namespace.rule3.message", Severity.INFO, null, false);
+    A4J_RERENDER_RULE("//@reRender","a4j.rerender.rule.message", Severity.ERROR, ReRenderParser.class, true, "render"),
+    A4J_ACTIONPARAM_RULE("//a4j:actionparam", "a4j.actionParam.rule.message",Severity.ERROR, GenericParser.class, true, "a4j:param"),
+    RICH_SUGGESTIONBOX_RULE("//rich:suggestionbox", "rich.suggestionBox.rule.message",Severity.ERROR, GenericParser.class, false),
+    ERROR_READING_DOCUMENT(null, "error.reading.document.message", Severity.ERROR, null, false),
+    NAMESPACE_RULE_1(null, "namespace.rule1.message", Severity.ERROR, NamespaceParser.class, true),
+    NAMESPACE_RULE_2(null, "namespace.rule2.message", Severity.WARNING, null, false);
 
     private enum Severity {INFO, WARNING, ERROR};
+
+    private static final Log log = LogFactory.getLog(EnumTypeMigration.class);
 
     // XPath used to get the elements to check
     private String xpath;
@@ -111,13 +115,14 @@ public enum EnumTypeMigration {
         return newValue;
     }
 
-    public RuleParser getInstance(boolean doMigration) {
+    public RuleParser getInstance(
+            boolean doMigration) {
         try {
             initParser(doMigration);
-            } catch (Exception ex) {
-            // TODO
-            }
-            return instance;
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+        }
+        return instance;
     }
 
     /**
@@ -148,7 +153,7 @@ public enum EnumTypeMigration {
         List<EnumTypeMigration> result = new ArrayList<EnumTypeMigration>();
 
         for (EnumTypeMigration type : values()) {
-            if (!StringUtils.isEmpty(type.xpath)) {
+            if (type.parser != null) {
                 result.add(type);
             }
         }

@@ -223,7 +223,7 @@ public class MigrationServiceImpl implements MigrationService {
                     if (doMigration) {
                         // If the automatic migration is activated, the parser
                         // tries to do the migration too
-                        parser.migrate(xhtmlDoc, file.getAbsolutePath());
+                        parser.migrate(xhtmlDoc);
                     }
                 }
                 // reset the instance of the parser
@@ -233,8 +233,8 @@ public class MigrationServiceImpl implements MigrationService {
             // A parsing exception occured, the error is loaded in the FileReport.
             List<String> params = new ArrayList<String>();
             params.add(docEx.getMessage());
-            fileReport.getListParams().put(EnumTypeMigration.NAMESPACE_RULE_1, params);
-            fileReport.getListMigration().put(EnumTypeMigration.NAMESPACE_RULE_1, 1);
+            fileReport.getListParams().put(EnumTypeMigration.ERROR_READING_DOCUMENT, params);
+            fileReport.getListMigration().put(EnumTypeMigration.ERROR_READING_DOCUMENT, 1);
         } catch(Exception ex) {
             // TODO
         }

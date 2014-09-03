@@ -47,10 +47,9 @@ public interface RuleParser {
     public void parse(Document input, FileReport report) throws Exception;
 
     /**
-     * Do the JSF 2 migration on the file.
+     * Do the JSF 2 migration in the DOM of the file.
      *
      * @param input The DOM of the file to migrate.
-     * @param originalFilePath The path of the original file.
      */
-    public void migrate(Document input, String originalFilePath) throws Exception;
+    public void migrate(Document input) throws Exception;
 }

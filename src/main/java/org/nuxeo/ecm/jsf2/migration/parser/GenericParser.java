@@ -16,8 +16,6 @@
  */
 package org.nuxeo.ecm.jsf2.migration.parser;
 
-import java.io.File;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -28,10 +26,6 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.Node;
-import org.dom4j.QName;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.XMLWriter;
-import org.jaxen.JaxenException;
 import org.jaxen.SimpleNamespaceContext;
 import org.jaxen.XPath;
 import org.jaxen.dom4j.Dom4jXPath;
@@ -58,15 +52,12 @@ public class GenericParser implements
 
     protected List<Node> listElementsToMigrate;
 
-    protected List<String> listPrefixToMigrate;
-
     @Override
     public void init(EnumTypeMigration rule, boolean doMigration) {
         xpath = rule.getXPath();
         this.rule = rule;
         this.doMigration = doMigration;
         listElementsToMigrate = new ArrayList<Node>();
-        listPrefixToMigrate = new ArrayList<String>();
     }
 
     @SuppressWarnings("unchecked")
@@ -79,17 +70,24 @@ public class GenericParser implements
         if (prefixesInXpath.size() > 0) {
             for (String prefixInXpath : prefixesInXpath) {
                 // Check if the prefix is in the list of prefixes
-                if (EnumPrefixes.getPrefix(prefixInXpath) != EnumPrefixes.UNKNOWN) {
-                    String namespace = checkNamespace(input.getRootElement(), prefixInXpath, report);
+                EnumPrefixes enumPrefix = EnumPrefixes.getPrefix(prefixInXpath);
+                if (enumPrefix != EnumPrefixes.UNKNOWN) {
+                    Namespace namespace = input.getRootElement().getNamespaceForPrefix(prefixInXpath);
+                    // If the namespace is not present in the root element, we
+                    // use the one defined in the enum to avoid errors while
+                    // executing the XPath expression.
+                    // Specific rules are used to check the validity of the
+                    // namespaces
+                    String nsURI = namespace != null ? namespace.getURI() : enumPrefix.getNamespace();
                     SimpleNamespaceContext nsContext = new SimpleNamespaceContext();
-                    nsContext.addNamespace(prefixInXpath,namespace);
+                    nsContext.addNamespace(prefixInXpath,nsURI);
                     xpathExpr.setNamespaceContext(nsContext);
                 } else {
                     // Add an error in the file report for the unknown namespace
-                    report.getListMigration().put(EnumTypeMigration.NAMESPACE_RULE_3, 1);
+                    report.getListMigration().put(EnumTypeMigration.NAMESPACE_RULE_2, 1);
                     List<String> params = new ArrayList<String>();
                     params.add(prefixInXpath);
-                    report.getListParams().put(EnumTypeMigration.NAMESPACE_RULE_3, params);
+                    report.getListParams().put(EnumTypeMigration.NAMESPACE_RULE_2, params);
                 }
             }
         }
@@ -103,46 +101,8 @@ public class GenericParser implements
         }
     }
 
-    /**
-     * The method checks if the namespace used for the prefix is the correct one
-     * with JSF2. If not, an error is added to the report and the "incorrect"
-     * namespace is used in the XPath request in order to get properly the
-     * elements matching the request.
-     *
-     * @param rootElement The root element of the document.
-     * @param prefixToCheck The prefix to check.
-     * @param report The report to add the error if needed.
-     * @return The name of the namespace to use for the XPath query.
-     */
-    protected String checkNamespace(
-            Element rootElement,
-            String prefixToCheck,
-            FileReport report) {
-        String namespace = EnumPrefixes.getPrefix(prefixToCheck).getNamespace();
-        Namespace namespaceInDoc = rootElement.getNamespaceForPrefix(prefixToCheck);
-
-        // Compare the namespace in the document and the one for reference
-        if (namespaceInDoc != null &&
-                !StringUtils.equals(namespace, namespaceInDoc.getURI())) {
-            report.getListMigration().put(EnumTypeMigration.NAMESPACE_RULE_2, 1);
-            List<String> params = new ArrayList<String>();
-            params.add(prefixToCheck);
-            params.add(namespace);
-            report.getListParams().put(EnumTypeMigration.NAMESPACE_RULE_2, params);
-            // Add the prefix to the list of prefix to migrate
-            listPrefixToMigrate.add(prefixToCheck);
-            // Use the "incorrect" namespace in the xpath query
-            namespace = namespaceInDoc.getURI();
-        }
-
-        return namespace;
-    }
-
-
     @Override
-    public void migrate(Document input, String originalFilePath) throws Exception {
-        // Migrate the namespaces
-        migratePrefixesNamespace(input);
+    public void migrate(Document input) throws Exception {
         // Migrate the elements matching the rule
         if (rule.isMigrationAuto()) {
             for (Node node : listElementsToMigrate) {
@@ -152,8 +112,6 @@ public class GenericParser implements
                 }
             }
         }
-        // Create a new file with the migrations
-        createMigratedFile(input, originalFilePath);
     }
 
     /**
@@ -180,66 +138,5 @@ public class GenericParser implements
         }
 
         return listPrefixes;
-    }
-
-    /**
-     * Migrate the namespaces that changed with JSF2.
-     *
-     * @param input The DOM of the input file.
-     */
-    protected void migratePrefixesNamespace(Document input)
-        throws JaxenException{
-        Element root = input.getRootElement();
-        for (String prefix : listPrefixToMigrate) {
-            Namespace newNamespace = new Namespace(prefix, EnumPrefixes.getPrefix(prefix).getNamespace());
-            Namespace oldNamespace = root.getNamespaceForPrefix(prefix);
-            if (oldNamespace != null) {
-                root.remove(oldNamespace);
-            }
-            root.add(newNamespace);
-
-            // Change the name of every elements with the prefix
-            StringBuilder prefixXpath = new StringBuilder(
-                    "//");
-            prefixXpath.append(prefix);
-            prefixXpath.append(":*");
-            // Create a new XPath expression, with the old namespace in order to
-            // get the elements matching the expression
-            XPath xpath = new Dom4jXPath(
-                    prefixXpath.toString());
-            SimpleNamespaceContext nc = new SimpleNamespaceContext();
-            nc.addNamespace(
-                    prefix,
-                    oldNamespace.getURI());
-            xpath.setNamespaceContext(nc);
-
-            @SuppressWarnings("unchecked")
-            List<Element> elementsToMigrate = xpath.selectNodes(input);
-            for (Element element : elementsToMigrate) {
-                // The namespace to change is not hold by the element but the QName
-                QName qname = element.getQName();
-                QName newQName = new QName(qname.getName(), newNamespace, qname.getQualifiedName());
-                element.setQName(newQName);
-            }
-        }
-    }
-
-    /**
-     * Create a file containing the migration done in the Document.
-     *
-     * @param input
-     * @param filePath
-     * @throws Exception
-     */
-    protected void createMigratedFile(Document input, String filePath)
-        throws Exception {
-        File fileMigrated = new File(filePath + ".migrated");
-        fileMigrated.createNewFile();
-
-        PrintWriter printWriter = new PrintWriter(fileMigrated);
-        XMLWriter writer = new XMLWriter(printWriter, OutputFormat.createPrettyPrint());
-        writer.write(input);
-
-        printWriter.close();
     }
 }
