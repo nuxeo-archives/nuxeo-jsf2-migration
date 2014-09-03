@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:rich="http://richfaces.org/rich" xmlns:a4j="http://richfaces.org/a4j">  
+  <h3> 
+    <h:outputText value="#{messages['title.createGroup']}"/> 
+  </h3>  
+  <a4j:form> 
+    <table class="dataInput"> 
+      <tbody> 
+        <tr> 
+          <td> 
+            <rich:suggestionbox id="faceted_search_suggestionBox"> 
+              <h:column> 
+                <h:graphicImage value="#{result.iconURL}"/> 
+              </h:column>  
+              <h:column> 
+                <h:outputText value="#{result.label}" styleClass="resultLabel"/>  
+                <h:outputText rendered="#{result.type == 'user'}" value=" #{result.userId}" styleClass="detail"/> 
+              </h:column> 
+            </rich:suggestionbox>  
+            <a4j:commandLink action="#{groupManagementActions.toggleShowCreateForm}" immediate="true" value="#{messages['command.cancel']}" styleClass="button" render="test #{getRenderPart('test','test2')} #{widget.name}_id}"> 
+              <a4j:param xmlns="" name="username" value="Alex" assignTo="#{actionparamBean.name}"/> 
+            </a4j:commandLink> 
+          </td> 
+        </tr> 
+      </tbody> 
+    </table> 
+  </a4j:form>  
+</div>
