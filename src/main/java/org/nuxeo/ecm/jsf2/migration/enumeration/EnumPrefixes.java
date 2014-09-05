@@ -40,6 +40,7 @@ public enum EnumPrefixes {
     NXDIR("nxdir", "http://nuxeo.org/nxdirectory"),
     NXD("nxd", "http://nuxeo.org/nxweb/document"),
     NXP("nxp", "http://nuxeo.org/nxweb/pdf"),
+    NXA4J("nxa4j", "http://nuxeo.org/nxweb/a4j"),
     UNKNOWN("unknown", null);
 
     private String prefix;
