@@ -1,0 +1,49 @@
+<div xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:c="http://java.sun.com/jstl/core"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:nxu="http://nuxeo.org/nxweb/util"
+  xmlns:nxl="http://nuxeo.org/nxforms/layout"
+  class="setupPanel">
+
+
+  <h:form id="setupForm" ajaxSubmit="true" render="setupPanel">
+
+  <f:subview>
+    <a4j:commandButton
+      value="#{messages['adminsubtab.sysinfo.advancedsetup']}"
+      render="advancedParams_panel"
+      immediate="true"
+      styleClass="button">
+      <f:setPropertyActionListener
+        value="on"
+        target="#{selectionActions.selectedValue}" />
+      <f:attribute name="targetComponentId"
+                   value="advancedParams_valueHolder"/>
+      <nxu:actionListenerMethod
+              value="#{selectionActions.onClick}"/>
+    </a4j:commandButton>
+  </f:subview>
+             
+  <p>
+    <h:outputText styleClass="processMessage completeWarning"
+      value="#{messages['label.setup.advancedSearch.warning']} " />
+    <f:subview>
+      <a4j:commandButton
+        value="#{messages['adminsubtab.sysinfo.advancedsetup.close']}"
+        render="advancedParams_panel"
+        immediate="true"
+        styleClass="button">
+        <f:attribute name="selectedValue" value="off"/>
+        <f:attribute name="targetComponentId"
+                     value="advancedParams_valueHolder"/>
+        <nxu:actionListenerMethod
+                value="#{selectionActions.onClick}"/>
+      </a4j:commandButton>
+    </f:subview>
+  </p>
+
+  </h:form>
+
+</div>

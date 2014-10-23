@@ -40,7 +40,11 @@ public enum EnumTypeMigration {
     RICH_SUGGESTIONBOX_RULE("//rich:suggestionbox", "rich.suggestionBox.rule.message",Severity.ERROR, GenericParser.class, false),
     ERROR_READING_DOCUMENT(null, "error.reading.document.message", Severity.ERROR, null, false),
     NAMESPACE_RULE_1(null, "namespace.rule1.message", Severity.ERROR, NamespaceParser.class, true),
-    NAMESPACE_RULE_2(null, "namespace.rule2.message", Severity.WARNING, null, false);
+    NAMESPACE_RULE_2(null, "namespace.rule2.message", Severity.WARNING, null, false),
+    VALUE_SELECTACTIONS_RULE("//*[@value='#{selectionActions.onClick}']", "value.selectactions.message",
+            Severity.WARNING, GenericParser.class, false),
+    TARGET_SELECTEDVALUE_RULE("//*[@target='#{selectionActions.selectedValue}']", "target.selectedvalue.message",
+            Severity.WARNING, GenericParser.class, false);
 
     private enum Severity {INFO, WARNING, ERROR};
 

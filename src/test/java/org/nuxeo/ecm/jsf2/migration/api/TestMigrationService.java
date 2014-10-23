@@ -48,6 +48,8 @@ public class TestMigrationService {
 
     private static final String TEMPLATE_NOTHING_TO_MIGRATE = "template_nothing_to_migrate.xhtml";
 
+    private static final String TEMPLATE_SELECTACTIONS = "template_selectactions.xhtml";
+
     private MigrationService migrationService = new MigrationServiceImpl();
 
     @Test
@@ -112,6 +114,16 @@ public class TestMigrationService {
         URL urlFileNotPresent = Thread.currentThread().getContextClassLoader().getResource(
                 TEMPLATE_NOTHING_TO_MIGRATE + ".migrated");
         assertNull(urlFileNotPresent);
+    }
+
+    @Test
+    public void testSelectActions() throws Exception {
+        FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_SELECTACTIONS, false);
+        // Check the content of the report
+        assertEquals(2, report.getListMigrations().size());
+        assertEquals(2, report.getListParams().size());
+        assertTrue(report.getListMigrations().containsKey(EnumTypeMigration.VALUE_SELECTACTIONS_RULE));
+        assertTrue(report.getListMigrations().containsKey(EnumTypeMigration.TARGET_SELECTEDVALUE_RULE));
     }
 
     private FileReport loadTemplateAndAnalyzeFile(String templateName, boolean doMigration)
