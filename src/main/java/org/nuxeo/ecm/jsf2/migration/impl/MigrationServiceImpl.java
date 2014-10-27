@@ -30,6 +30,8 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.OutputFormat;
@@ -40,8 +42,6 @@ import org.nuxeo.ecm.jsf2.migration.api.MigrationService;
 import org.nuxeo.ecm.jsf2.migration.enumeration.EnumTypeMigration;
 import org.nuxeo.ecm.jsf2.migration.parser.RuleParser;
 import org.nuxeo.ecm.jsf2.migration.report.FileReport;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of the services to help the migration to JSF 2.
@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  */
 public class MigrationServiceImpl implements MigrationService {
 
-    private final Logger log = LoggerFactory.getLogger(MigrationServiceImpl.class);
+    private static Log logger = LogFactory.getLog(MigrationServiceImpl.class);
 
     private static final String FILE_EXTENSION = "xhtml";
 
@@ -330,7 +330,7 @@ public class MigrationServiceImpl implements MigrationService {
                     listTemplatesNuxeoPlatform.add(line);
                 }
             } catch (IOException e) {
-                log.error("Error while reading file 'listTemplatesNuxeoPlatform.txt' : "
+                logger.error("Error while reading file 'listTemplatesNuxeoPlatform.txt' : "
                         + e.getMessage());
             }
         }
