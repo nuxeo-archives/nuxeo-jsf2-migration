@@ -45,7 +45,7 @@ public enum EnumTypeMigration {
             Severity.WARNING, GenericParser.class, false),
     TARGET_SELECTEDVALUE_RULE("//*[@target='#{selectionActions.selectedValue}']", "target.selectedvalue.message",
             Severity.WARNING, GenericParser.class, false),
-    H_OUTPUT_TEXT_RULE("//h:outputText[count(*) > 0]","h.output.text.message", Severity.ERROR, GenericParser.class, true, "h:panelGroup");
+    H_OUTPUT_TEXT_RULE("//h:outputText[count(*) > 0]","h.output.text.message", Severity.WARNING, GenericParser.class, false);
 
     private enum Severity {INFO, WARNING, ERROR};
 

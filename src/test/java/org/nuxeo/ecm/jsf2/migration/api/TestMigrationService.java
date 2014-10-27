@@ -108,12 +108,10 @@ public class TestMigrationService {
             throws Exception {
         loadTemplateAndAnalyzeFile(TEMPLATE_WITH_MIGRATIONS, true);
         loadTemplateAndAnalyzeFile(TEMPLATE_WRONG_NAMESPACE, true);
-        loadTemplateAndAnalyzeFile(TEMPLATE_WITH_OUTPUT_TEXT_MIGRATIONS, true);
         loadTemplateAndAnalyzeFile(TEMPLATE_NOTHING_TO_MIGRATE, true);
         // Check the content of the generated files
         compareContentMigratedFile(TEMPLATE_WITH_MIGRATIONS);
         compareContentMigratedFile(TEMPLATE_WRONG_NAMESPACE);
-        compareContentMigratedFile(TEMPLATE_WITH_OUTPUT_TEXT_MIGRATIONS);
         // Check that no files have been created
         URL urlFileNotPresent = Thread.currentThread().getContextClassLoader().getResource(
                 TEMPLATE_NOTHING_TO_MIGRATE + ".migrated");
