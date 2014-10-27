@@ -73,12 +73,8 @@ public class MigrationServiceImpl implements MigrationService {
     }
 
     @Override
-    public void analyzeProject(
-            File report,
-            List<File> listFiles,
-            boolean doMigration,
-            boolean format)
-            throws IOException {
+    public void analyzeProject(File report, List<File> listFiles,
+            boolean doMigration, boolean format) throws IOException {
         // If the file does not exist, it is created
         if (!report.exists()) {
             report.createNewFile();
@@ -93,11 +89,13 @@ public class MigrationServiceImpl implements MigrationService {
         for (File file : listFiles) {
             try {
                 listReports.add(analyzeFile(file, doMigration, format));
-            } catch(DocumentException ex) {
-                System.out.println(String.format("Error while reading file %s.", file.getName()));
+            } catch (DocumentException ex) {
+                System.out.println(String.format(
+                        "Error while reading file %s.", file.getName()));
                 System.out.println(ex.getMessage());
-            } catch(JaxenException jex) {
-                System.out.println(String.format("Error while parsing file %s.", file.getName()));
+            } catch (JaxenException jex) {
+                System.out.println(String.format(
+                        "Error while parsing file %s.", file.getName()));
                 System.out.println(jex.getMessage());
             }
         }
@@ -115,7 +113,7 @@ public class MigrationServiceImpl implements MigrationService {
      * @param report The text output stream of the report to complete.
      */
     private void generateReport(List<FileReport> listResults, PrintWriter report)
-            throws IOException{
+            throws IOException {
         // Load the file containing the messages to display in the report
         Properties reportProp = new Properties();
         InputStream is = this.getClass().getClassLoader().getResourceAsStream(
@@ -135,8 +133,8 @@ public class MigrationServiceImpl implements MigrationService {
      * @param reportProp Properties file containing the message to display.
      * @throws IOException
      */
-    private void generateSummaryReport(List<FileReport> listResults, PrintWriter report,
-            Properties reportProp) throws IOException {
+    private void generateSummaryReport(List<FileReport> listResults,
+            PrintWriter report, Properties reportProp) throws IOException {
 
         report.append("Summary\n");
         report.append("#######\n");
@@ -153,10 +151,8 @@ public class MigrationServiceImpl implements MigrationService {
             // If the type of migration is present, it's added to the report
             if (occurence > 0) {
                 report.append(" * [" + type.getSeverity() + "] ");
-                String key = type.getKeyMessage()
-                        + SUFFIX_SUMMARIZED_MESSAGE;
-                report.append(MessageFormat.format(
-                        reportProp.getProperty(key),
+                String key = type.getKeyMessage() + SUFFIX_SUMMARIZED_MESSAGE;
+                report.append(MessageFormat.format(reportProp.getProperty(key),
                         occurence));
                 report.append('\n');
             }
@@ -173,8 +169,8 @@ public class MigrationServiceImpl implements MigrationService {
      * @param reportProp Properties file containing the message to display.
      * @throws IOException
      */
-    private void generateDetailedReport(List<FileReport> listResults, PrintWriter report,
-            Properties reportProp) throws IOException {
+    private void generateDetailedReport(List<FileReport> listResults,
+            PrintWriter report, Properties reportProp) throws IOException {
         report.append("Details\n");
         report.append("#######");
         for (FileReport result : listResults) {
@@ -194,8 +190,7 @@ public class MigrationServiceImpl implements MigrationService {
                 List<String> listParams = result.getListParams().get(type);
                 String key = type.getKeyMessage() + SUFFIX_DETAILED_MESSAGE;
                 String messageReport = MessageFormat.format(
-                        reportProp.getProperty(key),
-                        listParams.toArray());
+                        reportProp.getProperty(key), listParams.toArray());
                 report.append("[" + type.getSeverity() + "] ");
                 report.append(messageReport);
                 report.append('\n');
@@ -204,12 +199,8 @@ public class MigrationServiceImpl implements MigrationService {
     }
 
     @Override
-    public FileReport analyzeFile(
-            File file,
-            boolean doMigration,
-            boolean format)
-            throws JaxenException,
-            DocumentException {
+    public FileReport analyzeFile(File file, boolean doMigration, boolean format)
+            throws JaxenException, DocumentException {
         FileReport fileReport = new FileReport(file);
 
         SAXReader reader = new SAXReader();
@@ -234,19 +225,23 @@ public class MigrationServiceImpl implements MigrationService {
 
             if (doMigration && fileReport.getListMigrations().size() > 0) {
                 if (format) {
-                    // Format the input file to allow the user to do a diff easily
+                    // Format the input file to allow the user to do a diff
+                    // easily
                     createFile(xhtmlOriginal, file.getAbsolutePath(), false);
                 }
                 // Create a new file with the migrations
                 createFile(xhtmlDoc, file.getAbsolutePath() + ".migrated", true);
             }
-        } catch(DocumentException docEx) {
-            // A parsing exception occured, the error is loaded in the FileReport.
+        } catch (DocumentException docEx) {
+            // A parsing exception occured, the error is loaded in the
+            // FileReport.
             List<String> params = new ArrayList<String>();
             params.add(docEx.getMessage());
-            fileReport.getListParams().put(EnumTypeMigration.ERROR_READING_DOCUMENT, params);
-            fileReport.getListMigrations().put(EnumTypeMigration.ERROR_READING_DOCUMENT, 1);
-        } catch(Exception ex) {
+            fileReport.getListParams().put(
+                    EnumTypeMigration.ERROR_READING_DOCUMENT, params);
+            fileReport.getListMigrations().put(
+                    EnumTypeMigration.ERROR_READING_DOCUMENT, 1);
+        } catch (Exception ex) {
             // TODO
         }
 
@@ -260,8 +255,8 @@ public class MigrationServiceImpl implements MigrationService {
      * @param filePath
      * @throws Exception
      */
-    protected void createFile(Document input, String filePath, boolean createNewFile)
-        throws Exception {
+    protected void createFile(Document input, String filePath,
+            boolean createNewFile) throws Exception {
 
         // Create file
         File fileMigrated = new File(filePath);
@@ -269,7 +264,8 @@ public class MigrationServiceImpl implements MigrationService {
             fileMigrated.createNewFile();
         }
         PrintWriter printWriter = new PrintWriter(fileMigrated);
-        XMLWriter writer = new XMLWriter(printWriter, OutputFormat.createPrettyPrint());
+        XMLWriter writer = new XMLWriter(printWriter,
+                OutputFormat.createPrettyPrint());
         writer.write(input);
 
         printWriter.close();

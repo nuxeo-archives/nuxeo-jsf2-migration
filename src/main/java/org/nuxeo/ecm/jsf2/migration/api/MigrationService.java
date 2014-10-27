@@ -50,12 +50,8 @@ public interface MigrationService {
      *            files in order to have the same format for the two files
      * @throws IOException
      */
-    public void analyzeProject(
-            File report,
-            List<File> listFiles,
-            boolean doMigration,
-            boolean format)
-            throws IOException;
+    public void analyzeProject(File report, List<File> listFiles,
+            boolean doMigration, boolean format) throws IOException;
 
     /**
      * Analyze an XHTML file for the action to be done for the migration.
@@ -68,12 +64,7 @@ public interface MigrationService {
      * @return A FileReport object containing the action to be done.
      * @throws JaxenException
      */
-    public FileReport analyzeFile(
-            File file,
-            boolean doMigration,
-            boolean format)
-            throws JaxenException,
-            DocumentException;
-
+    public FileReport analyzeFile(File file, boolean doMigration, boolean format)
+            throws JaxenException, DocumentException;
 
 }
