@@ -302,7 +302,7 @@ public class MigrationServiceImpl implements MigrationService {
             List<String> listParents = new ArrayList<>();
             File parent = file.getParentFile();
             if (parent != null && parent.exists()) {
-                while (!"nuxeo.war".equals(parent.getName())) {
+                while (parent != null && !"nuxeo.war".equals(parent.getName())) {
                     listParents.add(parent.getName());
                     parent = parent.getParentFile();
                 }
