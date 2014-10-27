@@ -19,6 +19,7 @@ package org.nuxeo.ecm.jsf2.migration.api;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import org.dom4j.DocumentException;
 import org.jaxen.JaxenException;
@@ -79,8 +80,19 @@ public interface MigrationService {
      *            files in order to have the same format for the two files
      * @return A FileReport object containing the action to be done.
      */
-    public FileReport analyzeFileForRule(File file,
+    public FileReport analyzeFileForRules(File file,
             List<EnumTypeMigration> listRules, boolean doMigration,
             boolean format) throws JaxenException, DocumentException;
+
+    /**
+     * Check if the template provided is actually an override of a Nuxeo
+     * template. If so, a warning is thrown in the report of the file.
+     *
+     * @param file The template to check.
+     * @param listTemplatesRef The list containing the templates of reference.
+     * @return True if the template is an override of a Nuxeo template.
+     */
+    public boolean checkOverriddenTemplate(File file,
+            Set<String> listTemplatesRef, boolean completePath);
 
 }

@@ -16,14 +16,18 @@
  */
 package org.nuxeo.ecm.jsf2.migration.impl;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
 import org.dom4j.Document;
@@ -36,6 +40,8 @@ import org.nuxeo.ecm.jsf2.migration.api.MigrationService;
 import org.nuxeo.ecm.jsf2.migration.enumeration.EnumTypeMigration;
 import org.nuxeo.ecm.jsf2.migration.parser.RuleParser;
 import org.nuxeo.ecm.jsf2.migration.report.FileReport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of the services to help the migration to JSF 2.
@@ -44,6 +50,8 @@ import org.nuxeo.ecm.jsf2.migration.report.FileReport;
  */
 public class MigrationServiceImpl implements MigrationService {
 
+    private final Logger log = LoggerFactory.getLogger(MigrationServiceImpl.class);
+
     private static final String FILE_EXTENSION = "xhtml";
 
     private static final String NOTHING_MESSAGE = "file.migration.nothing.message";
@@ -51,6 +59,8 @@ public class MigrationServiceImpl implements MigrationService {
     private static final String SUFFIX_DETAILED_MESSAGE = ".detailed";
 
     private static final String SUFFIX_SUMMARIZED_MESSAGE = ".summarized";
+
+    private static final Set<String> listTemplatesNuxeoPlatform = new HashSet<String>();
 
     @Override
     public List<File> getAllXhtmlFiles(File root) {
@@ -201,17 +211,20 @@ public class MigrationServiceImpl implements MigrationService {
     @Override
     public FileReport analyzeFile(File file, boolean doMigration, boolean format)
             throws JaxenException, DocumentException {
-        return analyzeFileForRule(file, EnumTypeMigration.getTypesMigration(),
+        return analyzeFileForRules(file, EnumTypeMigration.getTypesMigration(),
                 doMigration, format);
     }
 
     @Override
-    public FileReport analyzeFileForRule(File file,
+    public FileReport analyzeFileForRules(File file,
             List<EnumTypeMigration> listRules, boolean doMigration,
             boolean format) throws JaxenException, DocumentException {
         FileReport fileReport = new FileReport(file);
 
         SAXReader reader = new SAXReader();
+
+        // Check if the file overrides a Nuxeo template
+        analyzeOverriddenFile(fileReport, file);
 
         try {
             Document xhtmlDoc = reader.read(file);
@@ -278,5 +291,67 @@ public class MigrationServiceImpl implements MigrationService {
         writer.write(input);
 
         printWriter.close();
+    }
+
+    @Override
+    public boolean checkOverriddenTemplate(File file,
+            Set<String> listTemplatesRef, boolean completePath) {
+        StringBuilder fileName = new StringBuilder();
+        if (completePath) {
+            fileName.append("nuxeo.war/");
+            List<String> listParents = new ArrayList<>();
+            File parent = file.getParentFile();
+            if (parent != null && parent.exists()) {
+                while (!"nuxeo.war".equals(parent.getName())) {
+                    listParents.add(parent.getName());
+                    parent = parent.getParentFile();
+                }
+            }
+            for (int i = listParents.size() - 1; i >= 0; i--) {
+                fileName.append(listParents.get(i));
+                fileName.append("/");
+            }
+
+        }
+        fileName.append(file.getName());
+
+        return listTemplatesRef.contains(fileName.toString());
+    }
+
+    public Set<String> getListTemplatesNuxeoPlatform() {
+        if (listTemplatesNuxeoPlatform.size() == 0) {
+            InputStream is = this.getClass().getClassLoader().getResourceAsStream(
+                    "listTemplatesNuxeoPlatform.txt");
+            InputStreamReader in = new InputStreamReader(is);
+            BufferedReader buff = new BufferedReader(in);
+            String line = null;
+            try {
+                while ((line = buff.readLine()) != null) {
+                    listTemplatesNuxeoPlatform.add(line);
+                }
+            } catch (IOException e) {
+                log.error("Error while reading file 'listTemplatesNuxeoPlatform.txt' : "
+                        + e.getMessage());
+            }
+        }
+
+        return listTemplatesNuxeoPlatform;
+    }
+
+    /**
+     * Analyze if a file overrides a Nuxeo template.
+     *
+     * @param fileReport The FileReport to fill.
+     * @param file The file which is been analyzed.
+     */
+    protected void analyzeOverriddenFile(FileReport fileReport, File file) {
+        // Check if the file is an override of a Nuxeo template
+        boolean isOverride = checkOverriddenTemplate(file, getListTemplatesNuxeoPlatform(), true);
+        if (isOverride) {
+            fileReport.getListMigrations().put(EnumTypeMigration.OVERRIDE_RULE, 1);
+            List<String> params = new ArrayList<String>();
+            params.add(file.getName());
+            fileReport.getListParams().put(EnumTypeMigration.OVERRIDE_RULE, params);
+        }
     }
 }
