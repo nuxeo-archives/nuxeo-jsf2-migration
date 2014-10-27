@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:nxu="http://nuxeo.org/nxweb/util">  
+  <h3> 
+    <h:outputText value="#{messages['title.createGroup']}"/> 
+  </h3>  
+  <div> 
+    <h:panelGroup xmlns="" rendered="#{not empty field}"> 
+      <nxu:set var="canSee" value="#{docSuggestionActions.getDocumentExistsAndIsVisibleWithId(field)}"> 
+        <h:panelGroup rendered="#{canSee}"> 
+          <nxu:set var="doc" value="#{docSuggestionActions.getDocumentWithId(field)}"> 
+            <h:outputText value="#{nxd:titleOrId(doc)}"/> 
+          </nxu:set> 
+        </h:panelGroup>  
+        <h:outputText rendered="#{not canSee}" value="#{messages['label.documentSuggestion.docNotFoundOrNotVisible']} (#{field})"/> 
+      </nxu:set> 
+    </h:panelGroup> 
+  </div> 
+</div>

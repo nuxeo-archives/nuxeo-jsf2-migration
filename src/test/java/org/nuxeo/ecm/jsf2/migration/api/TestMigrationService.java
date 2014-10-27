@@ -50,6 +50,8 @@ public class TestMigrationService {
 
     private static final String TEMPLATE_SELECTACTIONS = "template_selectactions.xhtml";
 
+    private static final String TEMPLATE_WITH_OUTPUT_TEXT_MIGRATIONS = "template_with_output_text_migrations.xhtml";
+
     private MigrationService migrationService = new MigrationServiceImpl();
 
     @Test
@@ -106,10 +108,12 @@ public class TestMigrationService {
             throws Exception {
         loadTemplateAndAnalyzeFile(TEMPLATE_WITH_MIGRATIONS, true);
         loadTemplateAndAnalyzeFile(TEMPLATE_WRONG_NAMESPACE, true);
+        loadTemplateAndAnalyzeFile(TEMPLATE_WITH_OUTPUT_TEXT_MIGRATIONS, true);
         loadTemplateAndAnalyzeFile(TEMPLATE_NOTHING_TO_MIGRATE, true);
         // Check the content of the generated files
         compareContentMigratedFile(TEMPLATE_WITH_MIGRATIONS);
         compareContentMigratedFile(TEMPLATE_WRONG_NAMESPACE);
+        compareContentMigratedFile(TEMPLATE_WITH_OUTPUT_TEXT_MIGRATIONS);
         // Check that no files have been created
         URL urlFileNotPresent = Thread.currentThread().getContextClassLoader().getResource(
                 TEMPLATE_NOTHING_TO_MIGRATE + ".migrated");
@@ -124,6 +128,15 @@ public class TestMigrationService {
         assertEquals(2, report.getListParams().size());
         assertTrue(report.getListMigrations().containsKey(EnumTypeMigration.VALUE_SELECTACTIONS_RULE));
         assertTrue(report.getListMigrations().containsKey(EnumTypeMigration.TARGET_SELECTEDVALUE_RULE));
+    }
+
+    @Test
+    public void testOutputTextMigrations() throws Exception {
+        FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_WITH_OUTPUT_TEXT_MIGRATIONS, false);
+        // Check the content of the report
+        assertEquals(1, report.getListMigrations().size());
+        assertEquals(1, report.getListParams().size());
+        assertTrue(report.getListMigrations().containsKey(EnumTypeMigration.H_OUTPUT_TEXT_RULE));
     }
 
     private FileReport loadTemplateAndAnalyzeFile(String templateName, boolean doMigration)
