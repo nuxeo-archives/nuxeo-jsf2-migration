@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.dom4j.DocumentException;
 import org.jaxen.JaxenException;
+import org.nuxeo.ecm.jsf2.migration.enumeration.EnumTypeMigration;
 import org.nuxeo.ecm.jsf2.migration.report.FileReport;
 
 /**
@@ -62,9 +63,24 @@ public interface MigrationService {
      * @param format Before migrating the file, do a format of the original
      *            files in order to have the same format for the two files
      * @return A FileReport object containing the action to be done.
-     * @throws JaxenException
      */
     public FileReport analyzeFile(File file, boolean doMigration, boolean format)
             throws JaxenException, DocumentException;
+
+    /**
+     * Analyze an XHTML file for the action to be done for the migration but
+     * only for a specific list of rules.
+     *
+     * @param file The file to analyze.
+     * @param listRules The list of rules to execute.
+     * @param doMigration Automatically do the migration in the file if
+     *            possible.
+     * @param format Before migrating the file, do a format of the original
+     *            files in order to have the same format for the two files
+     * @return A FileReport object containing the action to be done.
+     */
+    public FileReport analyzeFileForRule(File file,
+            List<EnumTypeMigration> listRules, boolean doMigration,
+            boolean format) throws JaxenException, DocumentException;
 
 }

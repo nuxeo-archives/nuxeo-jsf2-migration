@@ -201,6 +201,14 @@ public class MigrationServiceImpl implements MigrationService {
     @Override
     public FileReport analyzeFile(File file, boolean doMigration, boolean format)
             throws JaxenException, DocumentException {
+        return analyzeFileForRule(file, EnumTypeMigration.getTypesMigration(),
+                doMigration, format);
+    }
+
+    @Override
+    public FileReport analyzeFileForRule(File file,
+            List<EnumTypeMigration> listRules, boolean doMigration,
+            boolean format) throws JaxenException, DocumentException {
         FileReport fileReport = new FileReport(file);
 
         SAXReader reader = new SAXReader();
@@ -209,7 +217,7 @@ public class MigrationServiceImpl implements MigrationService {
             Document xhtmlDoc = reader.read(file);
             Document xhtmlOriginal = (Document) xhtmlDoc.clone();
 
-            for (EnumTypeMigration type : EnumTypeMigration.getTypesMigration()) {
+            for (EnumTypeMigration type : listRules) {
                 RuleParser parser = type.getInstance(doMigration);
                 if (parser != null) {
                     parser.parse(xhtmlDoc, fileReport);
@@ -247,6 +255,7 @@ public class MigrationServiceImpl implements MigrationService {
 
         return fileReport;
     }
+
 
     /**
      * Create a file containing the migration done in the Document.
