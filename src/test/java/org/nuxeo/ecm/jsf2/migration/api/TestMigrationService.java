@@ -52,13 +52,15 @@ public class TestMigrationService {
 
     private static final String TEMPLATE_WITH_OUTPUT_TEXT_MIGRATIONS = "template_with_output_text_migrations.xhtml";
 
+    private static final String TEMPLATE_OVERRIDDEN = "content_view_search_layout.xhtml";
+
     private MigrationService migrationService = new MigrationServiceImpl();
 
     @Test
     public void testAnalyzeWithNoMigration()
             throws JaxenException, DocumentException {
 
-        FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_NOTHING_TO_MIGRATE, false);
+        FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_NOTHING_TO_MIGRATE, false, false);
 
         // Check the result
         assertEquals(0, report.getListMigrations().size());
@@ -69,7 +71,7 @@ public class TestMigrationService {
     public void testAnalyzeWithWrongNamespace()
             throws JaxenException, DocumentException {
 
-        FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_WRONG_NAMESPACE, false);
+        FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_WRONG_NAMESPACE, false, false);
 
         // Check the result
         assertEquals(1, report.getListMigrations().size());
@@ -80,7 +82,7 @@ public class TestMigrationService {
     @Test
     public void testAnalyzeWithUnboundPrefix()
             throws JaxenException, DocumentException {
-        FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_PREFIX_UNBOUND, false);
+        FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_PREFIX_UNBOUND, false, false);
 
         // Check the result
         assertEquals(1, report.getListMigrations().size());
@@ -91,7 +93,7 @@ public class TestMigrationService {
     @Test
     public void testAnalyzeWithManyMigrations()
             throws JaxenException, DocumentException {
-        FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_WITH_MIGRATIONS, false);
+        FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_WITH_MIGRATIONS, false, false);
 
         // Check the result
         assertEquals(5, report.getListMigrations().size());
@@ -106,9 +108,9 @@ public class TestMigrationService {
     @Test
     public void testAutoMigration()
             throws Exception {
-        loadTemplateAndAnalyzeFile(TEMPLATE_WITH_MIGRATIONS, true);
-        loadTemplateAndAnalyzeFile(TEMPLATE_WRONG_NAMESPACE, true);
-        loadTemplateAndAnalyzeFile(TEMPLATE_NOTHING_TO_MIGRATE, true);
+        loadTemplateAndAnalyzeFile(TEMPLATE_WITH_MIGRATIONS, false, true);
+        loadTemplateAndAnalyzeFile(TEMPLATE_WRONG_NAMESPACE, false, true);
+        loadTemplateAndAnalyzeFile(TEMPLATE_NOTHING_TO_MIGRATE, false, true);
         // Check the content of the generated files
         compareContentMigratedFile(TEMPLATE_WITH_MIGRATIONS);
         compareContentMigratedFile(TEMPLATE_WRONG_NAMESPACE);
@@ -120,7 +122,7 @@ public class TestMigrationService {
 
     @Test
     public void testSelectActions() throws Exception {
-        FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_SELECTACTIONS, false);
+        FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_SELECTACTIONS, false, false);
         // Check the content of the report
         assertEquals(2, report.getListMigrations().size());
         assertEquals(2, report.getListParams().size());
@@ -130,20 +132,30 @@ public class TestMigrationService {
 
     @Test
     public void testOutputTextMigrations() throws Exception {
-        FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_WITH_OUTPUT_TEXT_MIGRATIONS, false);
+        FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_WITH_OUTPUT_TEXT_MIGRATIONS, false, false);
         // Check the content of the report
         assertEquals(1, report.getListMigrations().size());
         assertEquals(1, report.getListParams().size());
         assertTrue(report.getListMigrations().containsKey(EnumTypeMigration.H_OUTPUT_TEXT_RULE));
     }
 
-    private FileReport loadTemplateAndAnalyzeFile(String templateName, boolean doMigration)
+    @Test
+    public void testOverriddenTemplate() throws Exception {
+        FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_OVERRIDDEN, false, false);
+        // Check the content of the report
+        assertEquals(1, report.getListMigrations().size());
+        assertEquals(1, report.getListParams().size());
+        assertTrue(report.getListMigrations().containsKey(EnumTypeMigration.OVERRIDE_RULE));
+    }
+
+    private FileReport loadTemplateAndAnalyzeFile(String templateName,
+            boolean completePath, boolean doMigration)
             throws DocumentException, JaxenException {
         URL url = Thread.currentThread().getContextClassLoader().getResource(
                 templateName);
         File template = new File(url.getPath());
 
-        return migrationService.analyzeFile(template, doMigration, false);
+        return migrationService.analyzeFile(template, completePath, doMigration, false);
     }
 
     private void compareContentMigratedFile(String templateName)
