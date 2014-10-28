@@ -65,8 +65,9 @@ public interface MigrationService {
      *            files in order to have the same format for the two files
      * @return A FileReport object containing the action to be done.
      */
-    public FileReport analyzeFile(File file, boolean doMigration, boolean format)
-            throws JaxenException, DocumentException;
+    public FileReport analyzeFile(File file, boolean completePath,
+            boolean doMigration, boolean format) throws JaxenException,
+            DocumentException;
 
     /**
      * Analyze an XHTML file for the action to be done for the migration but
@@ -80,7 +81,7 @@ public interface MigrationService {
      *            files in order to have the same format for the two files
      * @return A FileReport object containing the action to be done.
      */
-    public FileReport analyzeFileForRules(File file,
+    public FileReport analyzeFileForRules(File file, FileReport fileReport,
             List<EnumTypeMigration> listRules, boolean doMigration,
             boolean format) throws JaxenException, DocumentException;
 
