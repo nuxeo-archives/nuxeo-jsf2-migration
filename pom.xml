@@ -4,14 +4,13 @@
   <parent>
     <groupId>org.nuxeo</groupId>
 	<artifactId>nuxeo-addons-parent</artifactId>
-	<version>5.9.6-I20141027_2013</version>
+	<version>5.9.6-SNAPSHOT</version>
   </parent>
 
   <groupId>org.nuxeo.jsf2</groupId>
   <artifactId>nuxeo-jsf2-migration</artifactId>
   <name>Nuxeo CSV Importer / Exporter</name>
   <description>Module with helper methods for JSF2 migration of XHTML templates</description>
-  <version>5.9.6-SNAPSHOT</version>
   
   <dependencies>
     <dependency>
