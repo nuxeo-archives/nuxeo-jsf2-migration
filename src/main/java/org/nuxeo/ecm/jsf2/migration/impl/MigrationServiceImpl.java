@@ -233,6 +233,11 @@ public class MigrationServiceImpl implements MigrationService {
         SAXReader reader = new SAXReader();
 
         try {
+
+            reader.setFeature("http://xml.org/sax/features/validation", false);
+            reader.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
+            reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
             Document xhtmlDoc = reader.read(file);
             Document xhtmlOriginal = (Document) xhtmlDoc.clone();
 
@@ -275,7 +280,6 @@ public class MigrationServiceImpl implements MigrationService {
 
         return fileReport;
     }
-
 
     /**
      * Create a file containing the migration done in the Document.
