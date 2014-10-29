@@ -269,7 +269,8 @@ public class MigrationServiceImpl implements MigrationService {
             fileReport.getListMigrations().put(
                     EnumTypeMigration.ERROR_READING_DOCUMENT, 1);
         } catch (Exception ex) {
-            // TODO
+            logger.error(String.format("Error while analyzing file '%s' : %s",
+                    file.getName(), ex.getMessage()));
         }
 
         return fileReport;
