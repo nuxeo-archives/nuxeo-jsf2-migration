@@ -9,7 +9,7 @@
 
   <groupId>org.nuxeo.jsf2</groupId>
   <artifactId>nuxeo-jsf2-migration</artifactId>
-  <name>Nuxeo CSV Importer / Exporter</name>
+  <name>Nuxeo JSF2 Migration Tool</name>
   <description>Module with helper methods for JSF2 migration of XHTML templates</description>
   
   <dependencies>
