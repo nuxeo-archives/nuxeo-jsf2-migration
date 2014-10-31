@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.nuxeo.ecm.jsf2.migration.parser.AttributeAjaxSingleParser;
 import org.nuxeo.ecm.jsf2.migration.parser.GenericParser;
 import org.nuxeo.ecm.jsf2.migration.parser.NamespaceParser;
 import org.nuxeo.ecm.jsf2.migration.parser.ReRenderParser;
@@ -39,6 +40,8 @@ public enum EnumTypeMigration {
     A4J_ACTIONPARAM_RULE("//a4j:actionparam", "a4j.actionParam.rule.message",Severity.ERROR, GenericParser.class, true, "a4j:param"),
     A4J_AJAXLISTENER_RULE("//a4j:ajaxListener", "a4j.ajaxlistener.rule.message",
             Severity.ERROR, GenericParser.class, false),
+    ATTRIBUTE_AJAXSINGLE_RULE("//*[@ajaxSingle='true']", "attribute.ajaxsingle.rule.message", Severity.ERROR,
+            AttributeAjaxSingleParser.class, true, "execute=\"@this\""),
     RICH_SUGGESTIONBOX_RULE("//rich:suggestionbox", "rich.suggestionBox.rule.message",Severity.ERROR, GenericParser.class, false),
     ERROR_READING_DOCUMENT(null, "error.reading.document.message", Severity.ERROR, null, false),
     NAMESPACE_RULE_1(null, "namespace.rule1.message", Severity.ERROR, NamespaceParser.class, true),
