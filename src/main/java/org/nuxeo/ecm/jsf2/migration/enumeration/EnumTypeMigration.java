@@ -36,23 +36,53 @@ import org.nuxeo.ecm.jsf2.migration.parser.RuleParser;
  */
 public enum EnumTypeMigration {
 
-    A4J_FORM_RULE("//a4j:form","a4j.ajax.rule1.message", Severity.ERROR, GenericParser.class, false),
-    A4J_RERENDER_RULE("//@reRender","a4j.rerender.rule.message", Severity.ERROR, ReRenderParser.class, true, "render"),
-    A4J_ACTIONPARAM_RULE("//a4j:actionparam", "a4j.actionParam.rule.message",Severity.ERROR, GenericParser.class, true, "a4j:param"),
-    A4J_AJAXLISTENER_RULE("//a4j:ajaxListener", "a4j.ajaxlistener.rule.message",
-            Severity.ERROR, GenericParser.class, false),
-    ATTRIBUTE_AJAXSINGLE_RULE("//*[@ajaxSingle='true']", "attribute.ajaxsingle.rule.message", Severity.ERROR,
+    // Rule checking the presence of <a4j:form> elements
+    A4J_FORM_RULE("//a4j:form", "a4j.ajax.rule1.message", Severity.ERROR,
+            GenericParser.class, false),
+    // Rule checking the presence of reRender attributes
+    A4J_RERENDER_RULE("//@reRender", "a4j.rerender.rule.message",
+            Severity.ERROR, ReRenderParser.class, true, "render"),
+    // Rule checking the presence of <a4j:actionparam> elements
+    A4J_ACTIONPARAM_RULE("//a4j:actionparam", "a4j.actionParam.rule.message",
+            Severity.ERROR, GenericParser.class, true, "a4j:param"),
+    // Rule checking the presence of <a4j:ajaxListener> elements
+    A4J_AJAXLISTENER_RULE("//a4j:ajaxListener",
+            "a4j.ajaxlistener.rule.message", Severity.ERROR,
+            GenericParser.class, false),
+    // Rule checking the presence of ajaxSingle attributes set to 'true'
+    ATTRIBUTE_AJAXSINGLE_RULE("//*[@ajaxSingle='true']",
+            "attribute.ajaxsingle.rule.message", Severity.ERROR,
             AttributeAjaxSingleParser.class, true, "execute=\"@this\""),
-    ATTRIBUTE_EVENT_CLICK_RULE("//*[@event='onclick']", "attribute.eventclick.rule.message", Severity.ERROR, AttributeValueParser.class, true, "click"),
-    RICH_SUGGESTIONBOX_RULE("//rich:suggestionbox", "rich.suggestionBox.rule.message",Severity.ERROR, GenericParser.class, false),
-    ERROR_READING_DOCUMENT(null, "error.reading.document.message", Severity.ERROR, null, false),
-    NAMESPACE_RULE_1(null, "namespace.rule1.message", Severity.ERROR, NamespaceParser.class, true),
-    NAMESPACE_RULE_2(null, "namespace.rule2.message", Severity.WARNING, null, false),
-    VALUE_SELECTACTIONS_RULE("//*[@value='#{selectionActions.onClick}']", "value.selectactions.message",
+    // Rule checking the presence of event attributes set to 'onclick'
+    ATTRIBUTE_EVENT_CLICK_RULE("//*[@event='onclick']",
+            "attribute.eventclick.rule.message", Severity.ERROR,
+            AttributeValueParser.class, true, "click"),
+    // Rule checking the presence of <rich:suggestionbox> elements
+    RICH_SUGGESTIONBOX_RULE("//rich:suggestionbox",
+            "rich.suggestionBox.rule.message", Severity.ERROR,
+            GenericParser.class, false),
+    // Rule for errors while reading a XHTML file
+    ERROR_READING_DOCUMENT(null, "error.reading.document.message",
+            Severity.ERROR, null, false),
+    // Rule checking if a namespace is missing
+    NAMESPACE_RULE_1(null, "namespace.rule1.message", Severity.ERROR,
+            NamespaceParser.class, true),
+    // Rule checking for unknown namespaces
+    NAMESPACE_RULE_2(null, "namespace.rule2.message", Severity.WARNING, null,
+            false),
+    // Rule checking the presence of value '#{selectionActions.onClick}'
+    VALUE_SELECTACTIONS_RULE("//*[@value='#{selectionActions.onClick}']",
+            "value.selectactions.message", Severity.WARNING,
+            GenericParser.class, false),
+    // Rule checking the presence of target value '#{selectionActions.selectedValue}'
+    TARGET_SELECTEDVALUE_RULE(
+            "//*[@target='#{selectionActions.selectedValue}']",
+            "target.selectedvalue.message", Severity.WARNING,
+            GenericParser.class, false),
+    // Rule checking for <h:output> elements with children
+    H_OUTPUT_TEXT_RULE("//h:outputText[count(*) > 0]", "h.output.text.message",
             Severity.WARNING, GenericParser.class, false),
-    TARGET_SELECTEDVALUE_RULE("//*[@target='#{selectionActions.selectedValue}']", "target.selectedvalue.message",
-            Severity.WARNING, GenericParser.class, false),
-    H_OUTPUT_TEXT_RULE("//h:outputText[count(*) > 0]","h.output.text.message", Severity.WARNING, GenericParser.class, false),
+    // Rule checking if the template overrides a Nuxeo platform's template
     OVERRIDE_RULE(null, "override.rule", Severity.WARNING, null, false);
 
     private enum Severity {INFO, WARNING, ERROR};
