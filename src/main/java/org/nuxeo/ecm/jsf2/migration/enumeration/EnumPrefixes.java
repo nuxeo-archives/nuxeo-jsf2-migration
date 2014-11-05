@@ -25,22 +25,38 @@ import org.apache.commons.lang.StringUtils;
  */
 public enum EnumPrefixes {
 
-    C("c","http://java.sun.com/jstl/core"),
+    C("c", "http://java.sun.com/jstl/core"),
+    //
     H("h", "http://java.sun.com/jsf/html"),
+    //
     F("f", "http://java.sun.com/jsf/core"),
+    //
     UI("ui", "http://java.sun.com/jsf/facelets"),
+    //
     FN("fn", "http://java.sun.com/jsp/jstl/functions"),
+    //
     A4J("a4j", "http://richfaces.org/a4j"),
+    //
     RICH("rich", "http://richfaces.org/rich"),
+    //
     A4F("a4f", "https://ajax4jsf.dev.java.net/ajax"),
+    //
     NXL("nxl", "http://nuxeo.org/nxforms/layout"),
+    //
     NXTHEMES("nxthemes", "http://nuxeo.org/nxthemes"),
+    //
     NXU("nxu", "http://nuxeo.org/nxweb/util"),
+    //
     NXH("nxh", "http://nuxeo.org/nxweb/html"),
+    //
     NXDIR("nxdir", "http://nuxeo.org/nxdirectory"),
+    //
     NXD("nxd", "http://nuxeo.org/nxweb/document"),
+    //
     NXP("nxp", "http://nuxeo.org/nxweb/pdf"),
+    //
     NXA4J("nxa4j", "http://nuxeo.org/nxweb/a4j"),
+    //
     UNKNOWN("unknown", null);
 
     private String prefix;
@@ -51,8 +67,7 @@ public enum EnumPrefixes {
      * @param prefix
      * @param namespace
      */
-    private EnumPrefixes(String prefix,
-            String namespace) {
+    private EnumPrefixes(String prefix, String namespace) {
         this.prefix = prefix;
         this.namespace = namespace;
     }

@@ -146,6 +146,7 @@ public class MigrationServiceImpl implements MigrationService {
      * @param reportProp Properties file containing the message to display.
      * @throws IOException
      */
+    @SuppressWarnings("boxing")
     private void generateSummaryReport(List<FileReport> listResults,
             PrintWriter report, Properties reportProp) throws IOException {
 
@@ -235,8 +236,12 @@ public class MigrationServiceImpl implements MigrationService {
         try {
 
             reader.setFeature("http://xml.org/sax/features/validation", false);
-            reader.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
-            reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            reader.setFeature(
+                    "http://apache.org/xml/features/nonvalidating/load-dtd-grammar",
+                    false);
+            reader.setFeature(
+                    "http://apache.org/xml/features/nonvalidating/load-external-dtd",
+                    false);
 
             Document xhtmlDoc = reader.read(file);
             Document xhtmlOriginal = (Document) xhtmlDoc.clone();
@@ -272,7 +277,8 @@ public class MigrationServiceImpl implements MigrationService {
             fileReport.getListParams().put(
                     EnumTypeMigration.ERROR_READING_DOCUMENT, params);
             fileReport.getListMigrations().put(
-                    EnumTypeMigration.ERROR_READING_DOCUMENT, 1);
+                    EnumTypeMigration.ERROR_READING_DOCUMENT,
+                    Integer.valueOf(1));
         } catch (Exception ex) {
             logger.error(String.format("Error while analyzing file '%s' : %s",
                     file.getName(), ex.getMessage()));
@@ -387,7 +393,7 @@ public class MigrationServiceImpl implements MigrationService {
         }
         if (isOverride) {
             fileReport.getListMigrations().put(EnumTypeMigration.OVERRIDE_RULE,
-                    1);
+                    Integer.valueOf(1));
             List<String> params = new ArrayList<String>();
             params.add(file.getName());
             fileReport.getListParams().put(EnumTypeMigration.OVERRIDE_RULE,

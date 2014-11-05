@@ -35,8 +35,7 @@ public class ReRenderParser extends GenericParser {
     private static final String REGEX_EL = "(\\#|\\$)\\{([^}]+)\\}([^, ]*)|([^, ]+)";
 
     @Override
-    public void migrate(Document input)
-            throws Exception {
+    public void migrate(Document input) throws Exception {
         // Migrate the elements matching the rule
         if (rule.isMigrationAuto()) {
             for (Node node : listElementsToMigrate) {
@@ -62,7 +61,8 @@ public class ReRenderParser extends GenericParser {
     }
 
     /**
-     * Generate the new value for the attribute, replacing coma separators by whitespace.
+     * Generate the new value for the attribute, replacing coma separators by
+     * whitespace.
      *
      * @param value The original value of the attribute.
      * @return The converted value for JSF2.
@@ -79,13 +79,13 @@ public class ReRenderParser extends GenericParser {
             Matcher matcher = pattern.matcher(value);
             if (matcher.groupCount() > 1) {
                 StringBuilder newValueBuilder = new StringBuilder();
-                while(matcher.find()) {
+                while (matcher.find()) {
                     newValueBuilder.append(matcher.group());
                     newValueBuilder.append(' ');
                 }
                 newValue = newValueBuilder.toString();
                 // Remove the last space
-                newValue = newValue.substring(0, newValue.length()-1);
+                newValue = newValue.substring(0, newValue.length() - 1);
             }
         }
 

@@ -57,10 +57,11 @@ public class TestMigrationService {
     private MigrationService migrationService = new MigrationServiceImpl();
 
     @Test
-    public void testAnalyzeWithNoMigration()
-            throws JaxenException, DocumentException {
+    public void testAnalyzeWithNoMigration() throws JaxenException,
+            DocumentException {
 
-        FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_NOTHING_TO_MIGRATE, false, false);
+        FileReport report = loadTemplateAndAnalyzeFile(
+                TEMPLATE_NOTHING_TO_MIGRATE, false, false);
 
         // Check the result
         assertEquals(0, report.getListMigrations().size());
@@ -68,46 +69,55 @@ public class TestMigrationService {
     }
 
     @Test
-    public void testAnalyzeWithWrongNamespace()
-            throws JaxenException, DocumentException {
+    public void testAnalyzeWithWrongNamespace() throws JaxenException,
+            DocumentException {
 
-        FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_WRONG_NAMESPACE, false, false);
-
-        // Check the result
-        assertEquals(1, report.getListMigrations().size());
-        assertEquals(1, report.getListParams().size());
-        assertTrue(report.getListMigrations().containsKey(EnumTypeMigration.NAMESPACE_RULE_1));
-    }
-
-    @Test
-    public void testAnalyzeWithUnboundPrefix()
-            throws JaxenException, DocumentException {
-        FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_PREFIX_UNBOUND, false, false);
+        FileReport report = loadTemplateAndAnalyzeFile(
+                TEMPLATE_WRONG_NAMESPACE, false, false);
 
         // Check the result
         assertEquals(1, report.getListMigrations().size());
         assertEquals(1, report.getListParams().size());
-        assertTrue(report.getListMigrations().containsKey(EnumTypeMigration.ERROR_READING_DOCUMENT));
+        assertTrue(report.getListMigrations().containsKey(
+                EnumTypeMigration.NAMESPACE_RULE_1));
     }
 
     @Test
-    public void testAnalyzeWithManyMigrations()
-            throws JaxenException, DocumentException {
-        FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_WITH_MIGRATIONS, false, false);
+    public void testAnalyzeWithUnboundPrefix() throws JaxenException,
+            DocumentException {
+        FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_PREFIX_UNBOUND,
+                false, false);
+
+        // Check the result
+        assertEquals(1, report.getListMigrations().size());
+        assertEquals(1, report.getListParams().size());
+        assertTrue(report.getListMigrations().containsKey(
+                EnumTypeMigration.ERROR_READING_DOCUMENT));
+    }
+
+    @Test
+    public void testAnalyzeWithManyMigrations() throws JaxenException,
+            DocumentException {
+        FileReport report = loadTemplateAndAnalyzeFile(
+                TEMPLATE_WITH_MIGRATIONS, false, false);
 
         // Check the result
         assertEquals(5, report.getListMigrations().size());
         assertEquals(5, report.getListParams().size());
-        assertTrue(report.getListMigrations().containsKey(EnumTypeMigration.NAMESPACE_RULE_1));
-        assertTrue(report.getListMigrations().containsKey(EnumTypeMigration.A4J_RERENDER_RULE));
-        assertTrue(report.getListMigrations().containsKey(EnumTypeMigration.A4J_ACTIONPARAM_RULE));
-        assertTrue(report.getListMigrations().containsKey(EnumTypeMigration.RICH_SUGGESTIONBOX_RULE));
-        assertTrue(report.getListMigrations().containsKey(EnumTypeMigration.A4J_FORM_RULE));
+        assertTrue(report.getListMigrations().containsKey(
+                EnumTypeMigration.NAMESPACE_RULE_1));
+        assertTrue(report.getListMigrations().containsKey(
+                EnumTypeMigration.A4J_RERENDER_RULE));
+        assertTrue(report.getListMigrations().containsKey(
+                EnumTypeMigration.A4J_ACTIONPARAM_RULE));
+        assertTrue(report.getListMigrations().containsKey(
+                EnumTypeMigration.RICH_SUGGESTIONBOX_RULE));
+        assertTrue(report.getListMigrations().containsKey(
+                EnumTypeMigration.A4J_FORM_RULE));
     }
 
     @Test
-    public void testAutoMigration()
-            throws Exception {
+    public void testAutoMigration() throws Exception {
         loadTemplateAndAnalyzeFile(TEMPLATE_WITH_MIGRATIONS, false, true);
         loadTemplateAndAnalyzeFile(TEMPLATE_WRONG_NAMESPACE, false, true);
         loadTemplateAndAnalyzeFile(TEMPLATE_NOTHING_TO_MIGRATE, false, true);
@@ -122,30 +132,37 @@ public class TestMigrationService {
 
     @Test
     public void testSelectActions() throws Exception {
-        FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_SELECTACTIONS, false, false);
+        FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_SELECTACTIONS,
+                false, false);
         // Check the content of the report
         assertEquals(2, report.getListMigrations().size());
         assertEquals(2, report.getListParams().size());
-        assertTrue(report.getListMigrations().containsKey(EnumTypeMigration.VALUE_SELECTACTIONS_RULE));
-        assertTrue(report.getListMigrations().containsKey(EnumTypeMigration.TARGET_SELECTEDVALUE_RULE));
+        assertTrue(report.getListMigrations().containsKey(
+                EnumTypeMigration.VALUE_SELECTACTIONS_RULE));
+        assertTrue(report.getListMigrations().containsKey(
+                EnumTypeMigration.TARGET_SELECTEDVALUE_RULE));
     }
 
     @Test
     public void testOutputTextMigrations() throws Exception {
-        FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_WITH_OUTPUT_TEXT_MIGRATIONS, false, false);
+        FileReport report = loadTemplateAndAnalyzeFile(
+                TEMPLATE_WITH_OUTPUT_TEXT_MIGRATIONS, false, false);
         // Check the content of the report
         assertEquals(1, report.getListMigrations().size());
         assertEquals(1, report.getListParams().size());
-        assertTrue(report.getListMigrations().containsKey(EnumTypeMigration.H_OUTPUT_TEXT_RULE));
+        assertTrue(report.getListMigrations().containsKey(
+                EnumTypeMigration.H_OUTPUT_TEXT_RULE));
     }
 
     @Test
     public void testOverriddenTemplate() throws Exception {
-        FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_OVERRIDDEN, false, false);
+        FileReport report = loadTemplateAndAnalyzeFile(TEMPLATE_OVERRIDDEN,
+                false, false);
         // Check the content of the report
         assertEquals(1, report.getListMigrations().size());
         assertEquals(1, report.getListParams().size());
-        assertTrue(report.getListMigrations().containsKey(EnumTypeMigration.OVERRIDE_RULE));
+        assertTrue(report.getListMigrations().containsKey(
+                EnumTypeMigration.OVERRIDE_RULE));
     }
 
     private FileReport loadTemplateAndAnalyzeFile(String templateName,
@@ -155,7 +172,8 @@ public class TestMigrationService {
                 templateName);
         File template = new File(url.getPath());
 
-        return migrationService.analyzeFile(template, completePath, doMigration, false);
+        return migrationService.analyzeFile(template, completePath,
+                doMigration, false);
     }
 
     private void compareContentMigratedFile(String templateName)
@@ -186,8 +204,7 @@ public class TestMigrationService {
      * @return The file contents as a <code>String</code>
      * @exception IOException IO Error
      */
-    public static String deserializeString(File file)
-            throws IOException {
+    public static String deserializeString(File file) throws IOException {
         int len;
         char[] chr = new char[4096];
         final StringBuffer buffer = new StringBuffer();

@@ -41,8 +41,10 @@ public class MigrationToJSF2 {
         }
         // Get the parameters
         String path = args[0];
-        boolean migration = args.length > 1 ? Boolean.parseBoolean(args[1]) : false;
-        boolean format = args.length > 2 ? Boolean.parseBoolean(args[2]) : false;
+        boolean migration = args.length > 1 ? Boolean.parseBoolean(args[1])
+                : false;
+        boolean format = args.length > 2 ? Boolean.parseBoolean(args[2])
+                : false;
         File directory = new File(path);
 
         // Check if the directory exists
@@ -55,7 +57,9 @@ public class MigrationToJSF2 {
         MigrationService migrationService = new MigrationServiceImpl();
 
         // Check that a proper directory has been defined
-        String pathXhtmlRootDirectory = String.format("%s/src/main/resources/web/nuxeo.war/", directory.getAbsolutePath());
+        String pathXhtmlRootDirectory = String.format(
+                "%s/src/main/resources/web/nuxeo.war/",
+                directory.getAbsolutePath());
         File xhtmlRootDirectory = new File(pathXhtmlRootDirectory);
         if (!xhtmlRootDirectory.exists()) {
             System.out.println("The specified directory is not a valid project directory.");
@@ -66,12 +70,15 @@ public class MigrationToJSF2 {
         // Generate the report
         File report = new File(path + "/report.txt");
         try {
-        migrationService.analyzeProject(report, listXHTMLFiles, migration, format);
+            migrationService.analyzeProject(report, listXHTMLFiles, migration,
+                    format);
         } catch (IOException ex) {
-            System.out.println(String.format("Error while generating the report : %s", ex.getMessage()));
+            System.out.println(String.format(
+                    "Error while generating the report : %s", ex.getMessage()));
         }
 
         long timeElapsed = System.currentTimeMillis() - start;
-        System.out.println(String.format("The analyze is done in %d ms", timeElapsed));
+        System.out.println(String.format("The analyze is done in %d ms",
+                Long.valueOf(timeElapsed)));
     }
 }

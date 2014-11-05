@@ -39,8 +39,7 @@ import org.nuxeo.ecm.jsf2.migration.report.FileReport;
  *
  * @since 5.9.6
  */
-public class GenericParser implements
-        RuleParser {
+public class GenericParser implements RuleParser {
 
     protected final String patternPrefix = "/[a-zAZ0-9]+:[a-zAZ0-9]+";
 
@@ -72,22 +71,28 @@ public class GenericParser implements
                 // Check if the prefix is in the list of prefixes
                 EnumPrefixes enumPrefix = EnumPrefixes.getPrefix(prefixInXpath);
                 if (enumPrefix != EnumPrefixes.UNKNOWN) {
-                    Namespace namespace = input.getRootElement().getNamespaceForPrefix(prefixInXpath);
+                    Namespace namespace = input.getRootElement().getNamespaceForPrefix(
+                            prefixInXpath);
                     // If the namespace is not present in the root element, we
                     // use the one defined in the enum to avoid errors while
                     // executing the XPath expression.
                     // Specific rules are used to check the validity of the
                     // namespaces
-                    String nsURI = namespace != null ? namespace.getURI() : enumPrefix.getNamespace();
+                    String nsURI = namespace != null ? namespace.getURI()
+                            : enumPrefix.getNamespace();
                     SimpleNamespaceContext nsContext = new SimpleNamespaceContext();
-                    nsContext.addNamespace(prefixInXpath,nsURI);
+                    nsContext.addNamespace(prefixInXpath, nsURI);
                     xpathExpr.setNamespaceContext(nsContext);
                 } else {
-                    // Add an error in the file report for the unknown namespace
-                    report.getListMigrations().put(EnumTypeMigration.NAMESPACE_RULE_2, 1);
+                    // Add an error in the file report for the unknown
+                    // namespace
+                    report.getListMigrations().put(
+                            EnumTypeMigration.NAMESPACE_RULE_2,
+                            Integer.valueOf(1));
                     List<String> params = new ArrayList<String>();
                     params.add(prefixInXpath);
-                    report.getListParams().put(EnumTypeMigration.NAMESPACE_RULE_2, params);
+                    report.getListParams().put(
+                            EnumTypeMigration.NAMESPACE_RULE_2, params);
                 }
             }
         }
@@ -97,7 +102,8 @@ public class GenericParser implements
             List<String> params = new ArrayList<String>();
             params.add("" + listElementsToMigrate.size());
             report.getListParams().put(rule, params);
-            report.getListMigrations().put(rule, listElementsToMigrate.size());
+            report.getListMigrations().put(rule,
+                    Integer.valueOf(listElementsToMigrate.size()));
         }
     }
 
@@ -120,8 +126,7 @@ public class GenericParser implements
      * @param xpath XPath to check
      * @return The value of the prefix if present.
      */
-    protected List<String> getPrefix(
-            String xpath) {
+    protected List<String> getPrefix(String xpath) {
         List<String> listPrefixes = new ArrayList<String>();
 
         if (!StringUtils.isEmpty(xpath)) {

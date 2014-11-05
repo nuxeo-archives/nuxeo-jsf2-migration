@@ -28,7 +28,6 @@ import org.nuxeo.ecm.jsf2.migration.parser.NamespaceParser;
 import org.nuxeo.ecm.jsf2.migration.parser.ReRenderParser;
 import org.nuxeo.ecm.jsf2.migration.parser.RuleParser;
 
-
 /**
  * Enumeration of the type of migration.
  *
@@ -74,7 +73,8 @@ public enum EnumTypeMigration {
     VALUE_SELECTACTIONS_RULE("//*[@value='#{selectionActions.onClick}']",
             "value.selectactions.message", Severity.WARNING,
             GenericParser.class, false),
-    // Rule checking the presence of target value '#{selectionActions.selectedValue}'
+    // Rule checking the presence of target value
+    // '#{selectionActions.selectedValue}'
     TARGET_SELECTEDVALUE_RULE(
             "//*[@target='#{selectionActions.selectedValue}']",
             "target.selectedvalue.message", Severity.WARNING,
@@ -85,7 +85,9 @@ public enum EnumTypeMigration {
     // Rule checking if the template overrides a Nuxeo platform's template
     OVERRIDE_RULE(null, "override.rule", Severity.WARNING, null, false);
 
-    private enum Severity {INFO, WARNING, ERROR};
+    private enum Severity {
+        INFO, WARNING, ERROR
+    };
 
     private static final Log log = LogFactory.getLog(EnumTypeMigration.class);
 
@@ -98,6 +100,7 @@ public enum EnumTypeMigration {
     // The severity of the message
     private Severity severityMessage;
 
+    @SuppressWarnings("rawtypes")
     // The parser used to analyze and migrate the file
     private Class parser;
 
@@ -107,15 +110,13 @@ public enum EnumTypeMigration {
     // The migration can it be done by the parser?
     private boolean migrationAuto;
 
-    // When an auto migration is possible, newValue contains the new value for the element
+    // When an auto migration is possible, newValue contains the new value for
+    // the element
     private String newValue;
 
-    private EnumTypeMigration(
-            String xpath,
-            String keyMessage,
-            Severity severity,
-            Class parser,
-            boolean migrationAuto) {
+    @SuppressWarnings("rawtypes")
+    private EnumTypeMigration(String xpath, String keyMessage,
+            Severity severity, Class parser, boolean migrationAuto) {
         this.xpath = xpath;
         this.keyMessage = keyMessage;
         this.severityMessage = severity;
@@ -123,12 +124,9 @@ public enum EnumTypeMigration {
         this.migrationAuto = migrationAuto;
     }
 
-    private EnumTypeMigration(
-            String xpath,
-            String keyMessage,
-            Severity severity,
-            Class parser,
-            boolean migrationAuto,
+    @SuppressWarnings("rawtypes")
+    private EnumTypeMigration(String xpath, String keyMessage,
+            Severity severity, Class parser, boolean migrationAuto,
             String newValue) {
         this.xpath = xpath;
         this.keyMessage = keyMessage;
@@ -158,8 +156,7 @@ public enum EnumTypeMigration {
         return newValue;
     }
 
-    public RuleParser getInstance(
-            boolean doMigration) {
+    public RuleParser getInstance(boolean doMigration) {
         try {
             initParser(doMigration);
         } catch (Exception ex) {
@@ -174,9 +171,7 @@ public enum EnumTypeMigration {
      * @param listPrefixes The list of prefixes defined in the contribution.
      * @throws Exception
      */
-    public void initParser(
-            boolean doMigration)
-            throws Exception {
+    public void initParser(boolean doMigration) throws Exception {
         if (instance == null) {
             instance = (RuleParser) parser.newInstance();
         }

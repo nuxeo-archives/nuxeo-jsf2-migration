@@ -28,8 +28,7 @@ import org.dom4j.tree.DefaultAttribute;
 public class AttributeValueParser extends GenericParser {
 
     @Override
-    public void migrate(Document input)
-            throws Exception {
+    public void migrate(Document input) throws Exception {
         // Migrate the elements matching the rule
         if (rule.isMigrationAuto()) {
             for (Node node : listElementsToMigrate) {

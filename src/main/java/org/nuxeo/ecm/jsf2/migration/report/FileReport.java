@@ -46,8 +46,7 @@ public class FileReport {
         return attachedFile;
     }
 
-    public void setAttachedFile(
-            File attachedFile) {
+    public void setAttachedFile(File attachedFile) {
         this.attachedFile = attachedFile;
     }
 

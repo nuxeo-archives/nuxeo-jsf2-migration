@@ -41,41 +41,40 @@ public class NamespaceParser extends GenericParser {
     protected List<String> listPrefixToMigrate;
 
     @Override
-    public void init(
-            EnumTypeMigration rule,
-            boolean doMigration) {
+    public void init(EnumTypeMigration rule, boolean doMigration) {
         this.rule = rule;
         this.doMigration = doMigration;
         listPrefixToMigrate = new ArrayList<String>();
     }
 
     @Override
-    public void parse(Document input,
-            FileReport report)
-            throws Exception {
+    public void parse(Document input, FileReport report) throws Exception {
         Element rootElement = input.getRootElement();
         // For each prefix defined, we check, when it's present in the root
         // element, that the namespace is correct
         for (EnumPrefixes prefix : EnumPrefixes.values()) {
             Namespace ns = rootElement.getNamespaceForPrefix(prefix.getPrefix());
-            if (ns != null && !StringUtils.equals(prefix.getNamespace(), ns.getURI())) {
+            if (ns != null
+                    && !StringUtils.equals(prefix.getNamespace(), ns.getURI())) {
                 listPrefixToMigrate.add(prefix.getPrefix());
                 // Add the value for the report
-                report.getListMigrations().put(EnumTypeMigration.NAMESPACE_RULE_1, 1);
+                report.getListMigrations().put(
+                        EnumTypeMigration.NAMESPACE_RULE_1, Integer.valueOf(1));
                 List<String> params = new ArrayList<String>();
                 params.add(prefix.getPrefix());
                 params.add(prefix.getNamespace());
-                report.getListParams().put(EnumTypeMigration.NAMESPACE_RULE_1, params);
+                report.getListParams().put(EnumTypeMigration.NAMESPACE_RULE_1,
+                        params);
             }
         }
     }
 
     @Override
-    public void migrate(Document input)
-            throws Exception {
+    public void migrate(Document input) throws Exception {
         Element root = input.getRootElement();
         for (String prefix : listPrefixToMigrate) {
-            Namespace newNamespace = new Namespace(prefix, EnumPrefixes.getPrefix(prefix).getNamespace());
+            Namespace newNamespace = new Namespace(prefix,
+                    EnumPrefixes.getPrefix(prefix).getNamespace());
             Namespace oldNamespace = root.getNamespaceForPrefix(prefix);
             if (oldNamespace != null) {
                 root.remove(oldNamespace);
@@ -83,26 +82,25 @@ public class NamespaceParser extends GenericParser {
             root.add(newNamespace);
 
             // Change the name of every elements with the prefix
-            StringBuilder prefixXpath = new StringBuilder(
-                    "//");
+            StringBuilder prefixXpath = new StringBuilder("//");
             prefixXpath.append(prefix);
             prefixXpath.append(":*");
-            // Create a new XPath expression, with the old namespace in order to
+            // Create a new XPath expression, with the old namespace in order
+            // to
             // get the elements matching the expression
-            XPath xpath = new Dom4jXPath(
-                    prefixXpath.toString());
+            XPath xpath = new Dom4jXPath(prefixXpath.toString());
             SimpleNamespaceContext nc = new SimpleNamespaceContext();
-            nc.addNamespace(
-                    prefix,
-                    oldNamespace.getURI());
+            nc.addNamespace(prefix, oldNamespace.getURI());
             xpath.setNamespaceContext(nc);
 
             @SuppressWarnings("unchecked")
             List<Element> elementsToMigrate = xpath.selectNodes(input);
             for (Element element : elementsToMigrate) {
-                // The namespace to change is not hold by the element but the QName
+                // The namespace to change is not hold by the element but the
+                // QName
                 QName qname = element.getQName();
-                QName newQName = new QName(qname.getName(), newNamespace, qname.getQualifiedName());
+                QName newQName = new QName(qname.getName(), newNamespace,
+                        qname.getQualifiedName());
                 element.setQName(newQName);
             }
         }
