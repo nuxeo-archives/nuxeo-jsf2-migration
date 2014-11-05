@@ -56,6 +56,8 @@ public class TestMigrationService {
 
     private static final String COMPAT_TEMPLATE_OVERRIDDEN = "search_results_advanced.xhtml";
 
+    private static final String TREE_TEMPLATE = "document_publish_template.xhtml";
+
     private MigrationService migrationService = new MigrationServiceImpl();
 
     @Test
@@ -176,6 +178,25 @@ public class TestMigrationService {
         assertEquals(1, report.getListParams().size());
         assertTrue(report.getListMigrations().containsKey(
                 EnumTypeMigration.OVERRIDE_COMPAT_RULE));
+    }
+
+    @Test
+    public void testRichTree() throws Exception {
+        FileReport report = loadTemplateAndAnalyzeFile(TREE_TEMPLATE, false,
+                false);
+        // Check the content of the report
+        assertEquals(5, report.getListMigrations().size());
+        assertEquals(5, report.getListParams().size());
+        assertTrue(report.getListMigrations().containsKey(
+                EnumTypeMigration.A4J_FORM_RULE));
+        assertTrue(report.getListMigrations().containsKey(
+                EnumTypeMigration.OVERRIDE_RULE));
+        assertTrue(report.getListMigrations().containsKey(
+                EnumTypeMigration.NAMESPACE_RULE_1));
+        assertTrue(report.getListMigrations().containsKey(
+                EnumTypeMigration.A4J_RICHTREERECURSIVE_RULE));
+        assertTrue(report.getListMigrations().containsKey(
+                EnumTypeMigration.A4J_RERENDER_RULE));
     }
 
     private FileReport loadTemplateAndAnalyzeFile(String templateName,

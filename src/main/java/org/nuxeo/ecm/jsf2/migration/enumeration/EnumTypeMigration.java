@@ -44,6 +44,14 @@ public enum EnumTypeMigration {
     // Rule checking the presence of <a4j:actionparam> elements
     A4J_ACTIONPARAM_RULE("//a4j:actionparam", "a4j.actionParam.rule.message",
             Severity.ERROR, GenericParser.class, true, "a4j:param"),
+    // Rule checking the presence of <rich:recursiveTreeNodesAdaptor> elements
+    A4J_RICHTREERECURSIVE_RULE("//rich:recursiveTreeNodesAdaptor",
+            "a4j.recursiveTreeNodesAdaptor.rule.message", Severity.ERROR,
+            GenericParser.class, true, "rich:treeModelRecursiveAdaptor"),
+    // Rule checking the 'var' attribute on tag rich:treeModelRecursiveAdaptor
+    ATTRIBUTE_RICHTREENODEVAR_RULE("//rich:treeModelRecursiveAdaptor[@var]",
+            "a4j.treeNodeVar.rule.message", Severity.ERROR,
+            GenericParser.class, false),
     // Rule checking the presence of <a4j:ajaxListener> elements
     A4J_AJAXLISTENER_RULE("//a4j:ajaxListener",
             "a4j.ajaxlistener.rule.message", Severity.ERROR,
@@ -85,7 +93,8 @@ public enum EnumTypeMigration {
     // Rule checking if the template overrides a Nuxeo platform's template
     OVERRIDE_RULE(null, "override.rule", Severity.WARNING, null, false),
     // Rule checking if the template overrides a compat template
-    OVERRIDE_COMPAT_RULE(null, "override.compat.rule", Severity.ERROR, null, false);
+    OVERRIDE_COMPAT_RULE(null, "override.compat.rule", Severity.ERROR, null,
+            false);
 
     private enum Severity {
         INFO, WARNING, ERROR
