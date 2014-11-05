@@ -83,7 +83,9 @@ public enum EnumTypeMigration {
     H_OUTPUT_TEXT_RULE("//h:outputText[count(*) > 0]", "h.output.text.message",
             Severity.WARNING, GenericParser.class, false),
     // Rule checking if the template overrides a Nuxeo platform's template
-    OVERRIDE_RULE(null, "override.rule", Severity.WARNING, null, false);
+    OVERRIDE_RULE(null, "override.rule", Severity.WARNING, null, false),
+    // Rule checking if the template overrides a compat template
+    OVERRIDE_COMPAT_RULE(null, "override.compat.rule", Severity.ERROR, null, false);
 
     private enum Severity {
         INFO, WARNING, ERROR

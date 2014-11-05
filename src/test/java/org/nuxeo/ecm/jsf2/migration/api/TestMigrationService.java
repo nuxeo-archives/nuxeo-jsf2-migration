@@ -54,6 +54,8 @@ public class TestMigrationService {
 
     private static final String TEMPLATE_OVERRIDDEN = "content_view_search_layout.xhtml";
 
+    private static final String COMPAT_TEMPLATE_OVERRIDDEN = "search_results_advanced.xhtml";
+
     private MigrationService migrationService = new MigrationServiceImpl();
 
     @Test
@@ -163,6 +165,17 @@ public class TestMigrationService {
         assertEquals(1, report.getListParams().size());
         assertTrue(report.getListMigrations().containsKey(
                 EnumTypeMigration.OVERRIDE_RULE));
+    }
+
+    @Test
+    public void testOverriddenCompatTemplate() throws Exception {
+        FileReport report = loadTemplateAndAnalyzeFile(
+                COMPAT_TEMPLATE_OVERRIDDEN, false, false);
+        // Check the content of the report
+        assertEquals(1, report.getListMigrations().size());
+        assertEquals(1, report.getListParams().size());
+        assertTrue(report.getListMigrations().containsKey(
+                EnumTypeMigration.OVERRIDE_COMPAT_RULE));
     }
 
     private FileReport loadTemplateAndAnalyzeFile(String templateName,
