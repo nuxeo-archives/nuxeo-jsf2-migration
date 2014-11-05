@@ -29,6 +29,8 @@ public enum EnumPrefixes {
     //
     H("h", "http://java.sun.com/jsf/html"),
     //
+    S("s", "http://jboss.org/schema/seam/taglib"),
+    //
     F("f", "http://java.sun.com/jsf/core"),
     //
     UI("ui", "http://java.sun.com/jsf/facelets"),
