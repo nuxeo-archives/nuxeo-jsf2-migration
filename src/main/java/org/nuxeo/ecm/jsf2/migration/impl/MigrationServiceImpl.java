@@ -207,6 +207,9 @@ public class MigrationServiceImpl implements MigrationService {
             for (EnumTypeMigration type : result.getListMigrations().keySet()) {
                 List<String> listParams = result.getListParams().get(type);
                 String key = type.getKeyMessage() + SUFFIX_DETAILED_MESSAGE;
+                if (!reportProp.containsKey(key)) {
+                    key = type.getKeyMessage() + SUFFIX_SUMMARIZED_MESSAGE;
+                }
                 String messageReport = MessageFormat.format(
                         reportProp.getProperty(key), listParams.toArray());
                 report.append("[" + type.getSeverity() + "] ");
