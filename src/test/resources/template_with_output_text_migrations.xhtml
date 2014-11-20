@@ -1,6 +1,7 @@
 <div xmlns="http://www.w3.org/1999/xhtml"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:nxu="http://nuxeo.org/nxweb/util">
+  xmlns:nxu="http://nuxeo.org/nxweb/util"
+  xmlns:f="http://java.sun.com/jsf/core">
 
   <h3>
     <h:outputText value="#{messages['title.createGroup']}" />
@@ -21,4 +22,8 @@
       </nxu:set>
     </h:outputText>
   </div>
+
+  <h:outputText value="#{field}" rendered="#{canSee}">
+    <f:convertNumber pattern="#0.00" />
+  </h:outputText>
 </div>

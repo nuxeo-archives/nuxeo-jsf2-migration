@@ -88,7 +88,9 @@ public enum EnumTypeMigration {
             "target.selectedvalue.message", Severity.WARNING,
             GenericParser.class, false),
     // Rule checking for <h:output> elements with children
-    H_OUTPUT_TEXT_RULE("//h:outputText[count(*) > 0]", "h.output.text.message",
+    H_OUTPUT_TEXT_RULE(
+            "//h:outputText[@rendered and not(@value) and count(*) > 0]",
+            "h.output.text.message",
             Severity.WARNING, GenericParser.class, false),
     // Rule checking if the template overrides a Nuxeo platform's template
     OVERRIDE_RULE(null, "override.rule", Severity.WARNING, null, false),

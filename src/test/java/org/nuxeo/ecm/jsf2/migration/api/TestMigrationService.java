@@ -156,6 +156,8 @@ public class TestMigrationService {
         assertEquals(1, report.getListParams().size());
         assertTrue(report.getListMigrations().containsKey(
                 EnumTypeMigration.H_OUTPUT_TEXT_RULE));
+        assertEquals(2, report.getListMigrations().get(
+            EnumTypeMigration.H_OUTPUT_TEXT_RULE).intValue());
     }
 
     @Test
