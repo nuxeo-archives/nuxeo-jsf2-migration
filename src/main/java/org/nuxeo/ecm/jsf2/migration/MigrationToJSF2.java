@@ -36,7 +36,7 @@ public class MigrationToJSF2 {
     public static void main(String[] args) {
         // Check the arguments in parameter
         if (args.length == 0) {
-            System.out.println("Usage : java -jar <path to project> <auto migration> <format original files>");
+            System.out.println("Usage : java -jar nuxeo-jsf2-migration-<version>.jar <path to project> <auto migration> <format original files>");
             return;
         }
         // Get the parameters
