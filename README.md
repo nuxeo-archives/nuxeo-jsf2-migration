@@ -4,12 +4,15 @@ nuxeo-jsf2-migration
 Module with helper methods for JSF2 migration of XHTML templates.
 
 The module analyzes a project directory to get all the XHTML files (and XHTML only) to determine the action for the migration to JSF 2.
+A report is generated containing the actions to be done for the migration.
 
-Usage : java -jar nuxeo-jsf2-migration-\[version\].jar  \[path\] \[migration\] \[format\]
+Usage : java -jar nuxeo-jsf2-migration-\[version\].jar \[options\] \[path\]
 
+ + options:
+   + -m : If set, an automatic migration will be done (when possible)
+   + -f : If set, the original files will be formatted in order to allow users to do a diff between the original file and the migrated one easily
+   + -r : If set, the migration will walk the directory tree and will be applied in every valid project directory found.
  + path : path to the project directory. It is important to specify the path to the root of the directory and not the folder containing the XHTML files to analyze
- + migration : boolean, not mandatory, by default the value is false. If set to false, only a report is generated containing the actions to be done for the migration. If true, a report will be generated and an automatic migration will be done (when possible)
- + format : boolean, not mandatory, by default the value is false. If set to true, the original files will be formatted in order to allow users to do a diff between the original file and the migrated one easily
 
 ## How to add a new rule
 
