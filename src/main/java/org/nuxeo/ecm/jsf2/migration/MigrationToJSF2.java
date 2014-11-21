@@ -26,6 +26,14 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.PosixParser;
+
 import org.nuxeo.ecm.jsf2.migration.api.MigrationService;
 import org.nuxeo.ecm.jsf2.migration.impl.MigrationServiceImpl;
 
@@ -37,19 +45,50 @@ import org.nuxeo.ecm.jsf2.migration.impl.MigrationServiceImpl;
 public class MigrationToJSF2 {
 
     /**
+     * Command line flags
+     */
+    static class Flags {
+        final static Option MIGRATE = new Option("m", "migration", false,
+            "perform migration where possible");
+
+        final static Option FORMAT = new Option("f", "format", false,
+            "format original files");
+
+        final static Option RECURSIVE = new Option("r", "recursive", false,
+            "recursive");
+    }
+
+    /**
      * @param args Path to the directory to analyze.
      */
-    public static void main(String[] args) throws IOException {
-        // Check the arguments in parameter
-        if (args.length == 0) {
-            System.out.println("Usage : java -jar nuxeo-jsf2-migration-<version>.jar <path to project> <auto migration> <format original files> <recursive>");
-            return;
+    public static void main(String[] args) throws Exception {
+
+        // Parse command line
+        CommandLineParser parser = new PosixParser();
+
+        Options options = new Options();
+        options.addOption(Flags.MIGRATE);
+        options.addOption(Flags.FORMAT);
+        options.addOption(Flags.RECURSIVE);
+
+        CommandLine cmd = null;
+        try {
+            cmd = parser.parse(options, args);
+            if (cmd.getArgs().length != 1) {
+                throw new ParseException("Must specify project directory.");
+            }
+        } catch (ParseException e) {
+            HelpFormatter formatter = new HelpFormatter();
+            System.out.println(e.getMessage());
+            formatter.printHelp("java -jar nuxeo-jsf2-migration-<version>.jar <path to project>", options);
+            System.exit(-1);
         }
+
         // Get the parameters
-        String path = args[0];
-        final boolean migration = args.length > 1 && Boolean.parseBoolean(args[1]);
-        final boolean format = args.length > 2 && Boolean.parseBoolean(args[2]);
-        boolean recursive = args.length > 3 && Boolean.parseBoolean(args[3]);
+        String path = cmd.getArgs()[0];
+        final boolean migration = cmd.hasOption(Flags.MIGRATE.getOpt());
+        final boolean format = cmd.hasOption(Flags.FORMAT.getOpt());
+        boolean recursive = cmd.hasOption(Flags.RECURSIVE.getOpt());
 
         File directory = new File(path);
 
