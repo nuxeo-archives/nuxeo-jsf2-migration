@@ -187,8 +187,8 @@ public class TestMigrationService {
         FileReport report = loadTemplateAndAnalyzeFile(TREE_TEMPLATE, false,
                 false);
         // Check the content of the report
-        assertEquals(5, report.getListMigrations().size());
-        assertEquals(5, report.getListParams().size());
+        assertEquals(6, report.getListMigrations().size());
+        assertEquals(6, report.getListParams().size());
         assertTrue(report.getListMigrations().containsKey(
                 EnumTypeMigration.A4J_FORM_RULE));
         assertTrue(report.getListMigrations().containsKey(
@@ -199,6 +199,8 @@ public class TestMigrationService {
                 EnumTypeMigration.A4J_RICHTREERECURSIVE_RULE));
         assertTrue(report.getListMigrations().containsKey(
                 EnumTypeMigration.A4J_RERENDER_RULE));
+        assertTrue(report.getListMigrations().containsKey(
+                EnumTypeMigration.A4J_SUPPORT_RULE));
     }
 
     private FileReport loadTemplateAndAnalyzeFile(String templateName,

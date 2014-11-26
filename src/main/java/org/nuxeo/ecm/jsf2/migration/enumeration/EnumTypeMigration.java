@@ -60,6 +60,9 @@ public enum EnumTypeMigration {
     ATTRIBUTE_AJAXSINGLE_RULE("//*[@ajaxSingle='true']",
             "attribute.ajaxsingle.rule.message", Severity.ERROR,
             AttributeAjaxSingleParser.class, true, "execute=\"@this\""),
+    // Rule checking if the <a4j:support> tag is present
+    A4J_SUPPORT_RULE("//a4j:support", "a4j.suppport.rule.message",
+            Severity.ERROR, GenericParser.class, false),
     // Rule checking the presence of event attributes set to 'onclick'
     ATTRIBUTE_EVENT_CLICK_RULE("//*[@event='onclick']",
             "attribute.eventclick.rule.message", Severity.ERROR,
