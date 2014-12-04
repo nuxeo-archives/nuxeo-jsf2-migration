@@ -106,8 +106,8 @@ public class TestMigrationService {
                 TEMPLATE_WITH_MIGRATIONS, false, false);
 
         // Check the result
-        assertEquals(5, report.getListMigrations().size());
-        assertEquals(5, report.getListParams().size());
+        assertEquals(6, report.getListMigrations().size());
+        assertEquals(6, report.getListParams().size());
         assertTrue(report.getListMigrations().containsKey(
                 EnumTypeMigration.NAMESPACE_RULE_1));
         assertTrue(report.getListMigrations().containsKey(
