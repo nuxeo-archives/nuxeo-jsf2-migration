@@ -12,7 +12,11 @@ Usage : java -jar nuxeo-jsf2-migration-\[version\].jar \[options\] \[path\]
    + -m : If set, an automatic migration will be done (when possible)
    + -f : If set, the original files will be formatted in order to allow users to do a diff between the original file and the migrated one easily
    + -r : If set, the migration will walk the directory tree and will be applied in every valid project directory found.
- + path : path to the project directory. It is important to specify the path to the root of the directory and not the folder containing the XHTML files to analyze
+ + path:
+   + path to the project directory. It is important to specify the path to the root of the directory and not the folder containing the XHTML files to analyze
+
+   or 
+   + path to a single xhtml file (must not set -r option)
 
 ## How to add a new rule
 

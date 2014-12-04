@@ -24,6 +24,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
@@ -33,7 +35,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
-
+import org.apache.commons.io.FilenameUtils;
 import org.nuxeo.ecm.jsf2.migration.api.MigrationService;
 import org.nuxeo.ecm.jsf2.migration.impl.MigrationServiceImpl;
 
@@ -90,20 +92,30 @@ public class MigrationToJSF2 {
         final boolean format = cmd.hasOption(Flags.FORMAT.getOpt());
         boolean recursive = cmd.hasOption(Flags.RECURSIVE.getOpt());
 
-        File directory = new File(path);
+        File file = new File(path);
 
-        // Check if the directory exists
-        if (!directory.exists() || !directory.isDirectory()) {
-            System.out.println("The directory does not exist or is not a directory");
+        // Check if the file exists
+        if (!file.exists()) {
+            System.out.println("The file does not exist");
             return;
         }
-
-        if (!recursive) {
+        final boolean isDirectory = file.isDirectory();
+        if (recursive && !isDirectory) {
+            System.out.println("The file is not a directory");
+            return;
+        }
+        if (!isDirectory) {
+            if (!isValidXHTMLFile(path)) {
+                System.out.println("The specified file is not xhtml file.");
+                return;
+            }
+            processSingleXHTMLFile(file, migration, format);
+        } else if (!recursive) {
             if (!isValidProjectDirectory(path)) {
                 System.out.println("The specified directory is not a valid project directory.");
                 return;
             }
-            processDirectory(directory.getAbsolutePath(), migration, format);
+            processDirectory(file.getAbsolutePath(), migration, format);
         } else {
             Path startingDir = Paths.get(path);
             Files.walkFileTree(startingDir, new SimpleFileVisitor<Path>() {
@@ -128,8 +140,16 @@ public class MigrationToJSF2 {
 
         // Parse all files in the project directory to get all the XHTML files
         List<File> listXHTMLFiles = migrationService.getAllXhtmlFiles(getXHTMLRootDirectory(directory));
+        return processAnalyze(directory, migration, format, start,
+                listXHTMLFiles);
+    }
+
+    private static boolean processAnalyze(String directory, boolean migration,
+            boolean format, long start,
+            List<File> listXHTMLFiles) {
         // Generate the report
         File report = new File(directory + "/report.txt");
+        MigrationService migrationService = new MigrationServiceImpl();
         try {
             migrationService.analyzeProject(report, listXHTMLFiles, migration,
                 format);
@@ -144,6 +164,10 @@ public class MigrationToJSF2 {
         return true;
     }
 
+    private static boolean processSingleXHTMLFile(File file, boolean migration, boolean format) {
+        return processAnalyze(file.getParent(), migration, format, System.currentTimeMillis(), Arrays.asList(new File[] {file}));
+    }
+
     private static File getXHTMLRootDirectory(String directory) {
         String pathXhtmlRootDirectory = String.format(
             "%s/src/main/resources/web/nuxeo.war/",
@@ -154,5 +178,9 @@ public class MigrationToJSF2 {
     private static boolean isValidProjectDirectory(String directory) {
         File xhtmlRootDirectory = getXHTMLRootDirectory(directory);
         return xhtmlRootDirectory.exists();
+    }
+
+    private static boolean isValidXHTMLFile(String path) {
+        return FilenameUtils.getExtension(path).equals("xhtml");
     }
 }
