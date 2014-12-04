@@ -17,7 +17,9 @@
 package org.nuxeo.ecm.jsf2.migration.impl;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Scanner;
 import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
@@ -316,8 +319,12 @@ public class MigrationServiceImpl implements MigrationService {
             fileMigrated.createNewFile();
         }
         PrintWriter printWriter = new PrintWriter(fileMigrated);
+        OutputFormat format = new OutputFormat();
+        format.setIndentSize(2);
+        format.setNewlines(true);
+        format.setTrimText(true);
         XMLWriter writer = new XMLWriter(printWriter,
-                OutputFormat.createPrettyPrint());
+                format);
         writer.write(input);
 
         printWriter.close();

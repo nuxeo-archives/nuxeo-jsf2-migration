@@ -26,6 +26,7 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.Node;
+import org.dom4j.QName;
 import org.jaxen.SimpleNamespaceContext;
 import org.jaxen.XPath;
 import org.jaxen.dom4j.Dom4jXPath;
@@ -114,7 +115,14 @@ public class GenericParser implements RuleParser {
             for (Node node : listElementsToMigrate) {
                 if (!StringUtils.isEmpty(rule.getNewValue())) {
                     Element element = (Element) node;
-                    element.setName(rule.getNewValue());
+                    String newValue = rule.getNewValue();
+                    String prefix = null;
+                    if (newValue.contains(":")) {
+                        String[] split = newValue.split(":");
+                         prefix = split[0];
+                         newValue = split[1];
+                    }
+                    element.setQName(new QName(newValue, input.getRootElement().getNamespaceForPrefix(prefix)));
                 }
             }
         }
