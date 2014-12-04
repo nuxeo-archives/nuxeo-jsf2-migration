@@ -181,6 +181,6 @@ public class MigrationToJSF2 {
     }
 
     private static boolean isValidXHTMLFile(String path) {
-        return FilenameUtils.getExtension(path).equals("xhtml");
+        return "xhtml".equals(FilenameUtils.getExtension(path));
     }
 }
