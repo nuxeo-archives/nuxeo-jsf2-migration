@@ -73,7 +73,7 @@ public enum EnumTypeMigration {
             GenericParser.class, false),
     // Rule checking the presence of <rich:modalPanel> elements
     RICH_MODAL_PANEL_RULE("//rich:modalPanel", "rich.modalPanel.rule.message", Severity.ERROR,
-            GenericParser.class, false, "rich:popupPanel"),
+            GenericParser.class, true, "rich:popupPanel"),
     // Rule for errors while reading a XHTML file
     ERROR_READING_DOCUMENT(null, "error.reading.document.message",
             Severity.ERROR, null, false),
