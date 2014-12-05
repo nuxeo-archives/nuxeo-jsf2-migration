@@ -5,7 +5,7 @@
   <artifactId>nuxeo-jsf2-migration</artifactId>
   <name>Nuxeo JSF2 Migration Tool</name>
   <description>Module with helper methods for JSF2 migration of XHTML templates</description>
-  <version>1.2-SNAPSHOT</version>
+  <version>1.2</version>
 
   <dependencies>
     <dependency>
