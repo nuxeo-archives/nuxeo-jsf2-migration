@@ -6,7 +6,7 @@ Module with helper methods for JSF2 migration of XHTML templates.
 The module analyzes a project directory to get all the XHTML files (and XHTML only) to determine the action for the migration to JSF 2.
 A report is generated containing the actions to be done for the migration.
 
-Usage : java -jar nuxeo-jsf2-migration-\[version\].jar \[options\] \[path\]
+Usage : java -jar nuxeo-jsf2-migration-\[version\]-jar-with-dependencies.jar \[options\] \[path\]
 
  + options:
    + -m : If set, an automatic migration will be done (when possible)
