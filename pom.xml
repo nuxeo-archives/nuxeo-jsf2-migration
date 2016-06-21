@@ -4,13 +4,13 @@
   <parent>
     <groupId>org.nuxeo</groupId>
     <artifactId>nuxeo-ecm</artifactId>
-    <version>8.3-SNAPSHOT</version>
+    <version>6.0-HF30</version>
   </parent>
   <groupId>org.nuxeo.jsf2</groupId>
   <artifactId>nuxeo-jsf2-migration</artifactId>
   <name>Nuxeo JSF2 Migration Tool</name>
   <description>Module with helper methods for JSF2 migration of XHTML templates</description>
-  <version>1.3-SNAPSHOT</version>
+  <version>1.3-6030</version>
   <dependencies>
     <dependency>
       <groupId>commons-logging</groupId>
