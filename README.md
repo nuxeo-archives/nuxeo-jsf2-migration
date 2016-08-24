@@ -18,6 +18,16 @@ Usage : java -jar nuxeo-jsf2-migration-\[version\]-jar-with-dependencies.jar \[o
    or 
    + path to a single xhtml file (must not set -r option)
 
+## Versions
+
+The naming of releases follows the convention: `XX.YY.AABB`, where:
+- XX represents the major number of the release.
+- YY represents the minor number of the release.
+- AA represents the underlying Nuxeo version.
+- BB represents the underlying Nuxeo Hot Fix version.
+
+For example, a release which uses Nuxeo `6.0-HF31` will end with `.6031`.
+
 ## How to add a new rule
 
 The migration rules are defined in the enumeration EnumTypeMigration. To add a new rule, just add a new entry in the enumeration.
